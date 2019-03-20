@@ -2,13 +2,18 @@ package ru.shemplo.fitness.services;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
+import ru.shemplo.fitness.db.DBObjectUnwrapper;
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.FitnessEvent;
 import ru.shemplo.fitness.entities.SeasonTicket;
@@ -17,6 +22,7 @@ import ru.shemplo.snowball.annot.Snowflake;
 @Snowflake
 public class SeasonTicketService {
     
+    private DBObjectUnwrapper objectUnwrapper;
     private AppConfiguration configuration;
     private DBManager database;
     
@@ -38,10 +44,11 @@ public class SeasonTicketService {
             ); 
         } catch (SQLException sqle) { throw new IOException (sqle); }
         
+        LocalDateTime dateTime = Instant.now ().atOffset (ZoneOffset.UTC)
+                               . toLocalDateTime ();
         SeasonTicket ticket = new SeasonTicket ();
-        long time = System.currentTimeMillis ();
         
-        ticket.setLastTimeUpdated (new Timestamp (time));
+        ticket.setLastTimeUpdated (dateTime);
         ticket.setSecret (secret);
         ticket.setVisits (visits);
         ticket.setId (nextID);
@@ -49,15 +56,43 @@ public class SeasonTicketService {
         return ticket;
     }
     
+    private final LocalDateTime START_DATE = LocalDateTime.parse ("2019-03-20T00:00:00");
+    
     public List <SeasonTicket> getAllTickets () throws IOException {
+        return getAllTicketsAfter (START_DATE); // No events earlier can be
+    }
+    
+    public List <SeasonTicket> getAllTicketsAfter (LocalDateTime dateTime) throws IOException {
+        List <SeasonTicket> tickets = new ArrayList <> ();
         List <FitnessEvent> events;
         
-        try   { events = database.retrieve ("", FitnessEvent.class); } 
+        final String template = configuration.<String> get ("retrieve-all-by-type-after").get ();
+        final String date = dateTime.toString ().replace ('T', ' ');
+        
+        final String request = String.format (template, "ticket", date);
+        try   { events = database.retrieve (request, FitnessEvent.class); } 
         catch (SQLException sqle) { throw new IOException (sqle); }
         
-        events.forEach (System.out::println);
+        final Map <Integer, List <FitnessEvent>> eventsByTickets = events.stream ()
+            . collect (Collectors.groupingBy (FitnessEvent::getObjectId));
         
-        return new ArrayList <> ();
+        eventsByTickets.forEach ((id, sequence) -> {
+            try {
+                SeasonTicket ticket = objectUnwrapper.unwrap (sequence, 
+                                                   SeasonTicket.class);
+                ticket.setId (id);
+                
+                if (ticket.isCompleted ()) { tickets.add (ticket); }
+            } catch (IOException e) {}
+        });
+        
+        return tickets;
+    }
+    
+    public List <SeasonTicket> getTicketsByClient (FitnessClient client) throws IOException {
+        final Integer clientID = client.getId ();
+        return getAllTickets ().stream ().filter (t -> t.getClient ().equals (clientID))
+             . collect (Collectors.toList ());
     }
     
 }

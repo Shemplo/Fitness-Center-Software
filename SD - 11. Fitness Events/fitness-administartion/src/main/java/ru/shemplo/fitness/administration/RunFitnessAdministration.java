@@ -20,7 +20,7 @@ public class RunFitnessAdministration extends Snowball {
     
     public static void main (String ... args) { shape (args); }
     
-    //private SeasonTicketService seasonTicketService;
+    private SeasonTicketService seasonTicketService;
     private FitnessClientService clientService;
     private AppConfiguration configuration;
     
@@ -31,11 +31,11 @@ public class RunFitnessAdministration extends Snowball {
         } catch (IOException ioe) { ioe.printStackTrace (); }
         
         try {
-            FitnessClient client = new FitnessClient ();
-            client.setId (0);
+            FitnessClient client = clientService.getClientByID (0);
+            System.out.println (client);
             
-            //System.out.println (seasonTicketService.createTicket (client, "", 10));
-            System.out.println (clientService.getClientByID (0));
+            //System.out.println (seasonTicketService.createTicket (client, "secret for 2 ticket", 7));
+            seasonTicketService.getTicketsByClient (client).forEach (System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
         }

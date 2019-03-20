@@ -1,6 +1,6 @@
 package ru.shemplo.fitness.entities;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +15,7 @@ public class FitnessClient {
     private Integer id;
     
     private String name, secondName, lastName;
-    private Timestamp birthday;
+    
+    private LocalDate birthday;
     
 }
