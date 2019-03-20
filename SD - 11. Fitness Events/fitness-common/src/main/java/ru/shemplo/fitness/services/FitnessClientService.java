@@ -32,10 +32,10 @@ public class FitnessClientService {
             database.update (String.format (template, nextID)); 
         } catch (SQLException sqle) { throw new IOException (sqle); }
         
-        return updateClient (nextID, data);
+        return updateClientData (nextID, data);
     }
     
-    public FitnessClient updateClient (int clientID, Map <String, String> data) throws IOException {        
+    public FitnessClient updateClientData (int clientID, Map <String, String> data) throws IOException {        
         try { 
             String template = configuration.<String> get ("update-client-data").get ();
             String [] requests = new String [data.size ()];
@@ -61,6 +61,18 @@ public class FitnessClientService {
             client.setId (clientID);
             return client;
         } catch (SQLException sqle) { throw new IOException (sqle); }
+    }
+    
+    public FitnessClient updateClient (FitnessClient client) throws IOException {
+        String template = configuration.<String> get ("retrieve-by-id-type-after").get ();
+        String request = String.format (template, "client", client.getId (), 
+                                              client.getLastTimeUpdated ());
+        
+        List <FitnessEvent> events;
+        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        return objectUnwrapper.unwrapTo (events, client);
     }
     
 }

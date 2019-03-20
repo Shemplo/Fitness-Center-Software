@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter @Setter
 @NoArgsConstructor
-public class SeasonTicket implements Completable { 
+public class SeasonTicket implements Completable, Updatable { 
     
     private String secret;
     
@@ -40,7 +40,8 @@ public class SeasonTicket implements Completable {
     
     @Override
     public boolean isCompleted () {
-        return id != null && secret != null && client != null && visits != null;
+        return id     != null && secret != null 
+            && client != null && visits != null;
     }
     
 }

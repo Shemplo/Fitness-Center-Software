@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.shemplo.fitness.entities.FitnessEvent;
+import ru.shemplo.fitness.entities.Updatable;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
@@ -41,7 +42,7 @@ public class DBObjectUnwrapper {
         return object;
     }
     
-    public <T> T unwrapTo (List <FitnessEvent> sequence, T instance) {
+    public <T extends Updatable> T unwrapTo (List <FitnessEvent> sequence, T instance) {
         Map <String, Method> setters = new HashMap <> ();
         for (Method method : instance.getClass ().getDeclaredMethods ()) {
             String name = method.getName ().toLowerCase ();
@@ -99,12 +100,14 @@ public class DBObjectUnwrapper {
                 | InvocationTargetException e) {
                 return; // failed to call this setter
             }
+            
+            instance.setLastTimeUpdated (event.getDate ().toLocalDateTime ());
         });
         
         return instance;
     }
     
-    public <T> T unwrap (List <FitnessEvent> sequence, Class <T> type) throws IOException {
+    public <T extends Updatable> T unwrap (List <FitnessEvent> sequence, Class <T> type) throws IOException {
         return unwrapTo (sequence, makeRawInstance (type));
     }
     

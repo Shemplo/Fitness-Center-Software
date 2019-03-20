@@ -29,6 +29,11 @@ public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBMa
     }
     
     @Override
+    public <T> List <T> retrieveTo (String request, T instance) throws IOException, SQLException {
+        throw new UnsupportedOperationException ();
+    }
+    
+    @Override
     public <T> List <T> retrieve (String request, Class <T> type) 
             throws IOException, SQLException {
         List <T> result = new ArrayList <> ();

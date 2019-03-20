@@ -63,7 +63,6 @@ public class SeasonTicketService {
     }
     
     public List <SeasonTicket> getAllTicketsAfter (LocalDateTime dateTime) throws IOException {
-        List <SeasonTicket> tickets = new ArrayList <> ();
         List <FitnessEvent> events;
         
         final String template = configuration.<String> get ("retrieve-all-by-type-after").get ();
@@ -73,9 +72,39 @@ public class SeasonTicketService {
         try   { events = database.retrieve (request, FitnessEvent.class); } 
         catch (SQLException sqle) { throw new IOException (sqle); }
         
-        final Map <Integer, List <FitnessEvent>> eventsByTickets = events.stream ()
-            . collect (Collectors.groupingBy (FitnessEvent::getObjectId));
+        return eventsToTickets (events);
+    }
+    
+    public List <SeasonTicket> getTicketsByClient (FitnessClient client) throws IOException {
+        String template = configuration.<String> get ("retrieve-p-client-tickets").get ();
+        String request = String.format (template, client.getId ());
         
+        List <FitnessEvent> events;
+        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        final Integer clientID = client.getId ();
+        return eventsToTickets (events).stream ().filter (t -> t.getClient ().equals (clientID))
+             . collect (Collectors.toList ());
+    }
+    
+    public SeasonTicket updateTicket (SeasonTicket ticket) throws IOException {
+        String template = configuration.<String> get ("retrieve-by-id-type-after").get ();
+        String request = String.format (template, "ticket", ticket.getId (), 
+                                                 ticket.getLastTimeUsed ());
+        
+        List <FitnessEvent> events;
+        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        return objectUnwrapper.unwrapTo (events, ticket);
+    }
+    
+    private List <SeasonTicket> eventsToTickets (List <FitnessEvent> events) {
+        final Map <Integer, List <FitnessEvent>> eventsByTickets = events.stream ()
+                . collect (Collectors.groupingBy (FitnessEvent::getObjectId));
+        final List <SeasonTicket> tickets = new ArrayList <> ();
+            
         eventsByTickets.forEach ((id, sequence) -> {
             try {
                 SeasonTicket ticket = objectUnwrapper.unwrap (sequence, 
@@ -87,12 +116,6 @@ public class SeasonTicketService {
         });
         
         return tickets;
-    }
-    
-    public List <SeasonTicket> getTicketsByClient (FitnessClient client) throws IOException {
-        final Integer clientID = client.getId ();
-        return getAllTickets ().stream ().filter (t -> t.getClient ().equals (clientID))
-             . collect (Collectors.toList ());
     }
     
 }
