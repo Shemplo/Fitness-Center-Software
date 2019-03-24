@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
@@ -20,6 +21,7 @@ import ru.shemplo.fitness.entities.SeasonTicket;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
+@AllArgsConstructor
 public class SeasonTicketService {
     
     private DBObjectUnwrapper objectUnwrapper;
@@ -62,6 +64,17 @@ public class SeasonTicketService {
         return getAllTicketsAfter (START_DATE); // No events earlier can be
     }
     
+    /**
+     * Returns all {@link SeasonTicket}s that was created after specified
+     * {@link LocalDateTime time} in the past
+     * 
+     * @param dateTime time border for all events in past
+     * 
+     * @return list of {@link SeasonTicket tickets}
+     * 
+     * @throws IOException if failed to retrieve data from DB
+     * 
+     */
     public List <SeasonTicket> getAllTicketsAfter (LocalDateTime dateTime) throws IOException {
         List <FitnessEvent> events;
         
@@ -75,6 +88,18 @@ public class SeasonTicketService {
         return eventsToTickets (events);
     }
     
+    /**
+     * Returns all {@link SeasonTicket}s that belong to specified {@link FitnessClient}
+     * 
+     * @param client representation of real world client entity
+     * 
+     * @return list of {@link SeasonTicket tickets} referenced to the on {@link FitnessClient client}
+     * 
+     * @throws IOException if failed to retrieve data from DB
+     * 
+     * @see FitnessClientService#getClientByID(int)
+     * 
+     */
     public List <SeasonTicket> getTicketsByClient (FitnessClient client) throws IOException {
         String template = configuration.<String> get ("retrieve-p-client-tickets").get ();
         String request = String.format (template, client.getId ());
@@ -88,6 +113,39 @@ public class SeasonTicketService {
              . collect (Collectors.toList ());
     }
     
+    /**
+     * Returns the last {@link SeasonTicket} for that was assigned this secret keyword
+     * 
+     * @param secret some string identifier for the {@link SeasonTicket ticket} object
+     * 
+     * @return one {@link SeasonTicket ticket} that has such <i>secret</i>
+     * 
+     * @throws IOException if failed to retrieve data from DB
+     * 
+     */
+    public SeasonTicket getTicketBySecret (String secret) throws IOException {
+        String template = configuration.<String> get ("retrieve-ticket-by-secret").get ();
+        String request = String.format (template, secret);
+        
+        List <FitnessEvent> events;
+        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        return objectUnwrapper.unwrapTo (events, new SeasonTicket ());
+    }
+    
+    /**
+     * Returns passed {@link SeasonTicket} object but adds all changes that
+     * happened since the last update (if wasn't updated then since retrieve time).
+     * Time border for new events - time when the last field in object was changed
+     * 
+     * @param ticket object that should be updated with last events
+     * 
+     * @return the given {@link SeasonTicket ticket} object with updates
+     * 
+     * @throws IOException if failed to retrieve data from DB
+     * 
+     */
     public SeasonTicket updateTicket (SeasonTicket ticket) throws IOException {
         String template = configuration.<String> get ("retrieve-by-id-type-after").get ();
         String request = String.format (template, "ticket", ticket.getId (), 

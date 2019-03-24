@@ -8,11 +8,13 @@ import java.sql.SQLException;
 
 import java.util.*;
 
+import lombok.AllArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.entities.Database;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
+@AllArgsConstructor
 public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBManager {
     
     private DBObjectUnwrapper objectUnwrapper;

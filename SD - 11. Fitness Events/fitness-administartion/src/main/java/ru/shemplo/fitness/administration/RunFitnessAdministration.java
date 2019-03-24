@@ -3,12 +3,15 @@ package ru.shemplo.fitness.administration;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import java.util.List;
+
 import javafx.application.Application;
 
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.administration.gfx.AdminApplication;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.entities.FitnessClient;
+import ru.shemplo.fitness.entities.SeasonTicket;
 import ru.shemplo.fitness.services.FitnessClientService;
 import ru.shemplo.fitness.services.SeasonTicketService;
 import ru.shemplo.snowball.annot.Wind;
@@ -35,7 +38,15 @@ public class RunFitnessAdministration extends Snowball {
             System.out.println (client);
             
             //System.out.println (seasonTicketService.createTicket (client, "secret for 2 ticket", 7));
-            seasonTicketService.getTicketsByClient (client).forEach (System.out::println);
+            List <SeasonTicket> tickets = seasonTicketService.getTicketsByClient (client);
+            tickets.stream ().map (t -> {
+                try   { return seasonTicketService.updateTicket (t); } 
+                catch (IOException e) {}
+                
+                return t;   
+            }).forEach (System.out::println);
+            
+            System.out.println (seasonTicketService.getTicketBySecret ("some secret value"));
         } catch (IOException e) {
             e.printStackTrace();
         }

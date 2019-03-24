@@ -8,6 +8,7 @@ import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.AllArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
@@ -16,6 +17,7 @@ import ru.shemplo.fitness.entities.FitnessEvent;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
+@AllArgsConstructor
 public class FitnessClientService {
     
     private DBObjectUnwrapper objectUnwrapper;
