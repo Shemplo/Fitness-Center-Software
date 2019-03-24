@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
@@ -20,6 +21,7 @@ import ru.shemplo.fitness.entities.SeasonTicket;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
+@AllArgsConstructor
 public class SeasonTicketService {
     
     private DBObjectUnwrapper objectUnwrapper;
