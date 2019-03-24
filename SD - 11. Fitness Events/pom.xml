@@ -41,6 +41,13 @@
                         <mainClass>ru.shemplo.*</mainClass>
                     </transformer>
                 </transformers>
+                <artifactSet>
+                  <includes>
+                    <include>ru.shemplo:fitness</include>
+                    <include>ru.shemplo:fitness-common</include>
+                    <include>ru.shemplo:fitness-administration</include>
+                  </includes>
+                </artifactSet>
             </configuration>
           </execution>
         </executions>

@@ -1,5 +1,7 @@
 package ru.shemplo.fitness;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,14 +26,26 @@ public class AppConfiguration {
     @PostShaped private void readRequests () throws IOException {
         readConfigurationFile (Paths.get ("requests.yml"));
     }
-    
+
     public void readConfigurationFile (Path path) throws IOException {
         try (
             InputStream is = Files.newInputStream (path);
-        ) {            
-            Map <String, Object> config = new Yaml ().load (is);
-            config.forEach (configuration::put);
+        ) {
+            readConfigurationFile(is);
         }
+    }
+
+    public void readConfigurationFile (File file) throws IOException {
+        try (
+                InputStream is = new FileInputStream(file);
+        ) {
+            readConfigurationFile(is);
+        }
+    }
+
+    public void readConfigurationFile (InputStream is) throws IOException {
+        Map <String, Object> config = new Yaml ().load (is);
+        config.forEach (configuration::put);
     }
     
     public <T> Optional <T> get (String key) {
