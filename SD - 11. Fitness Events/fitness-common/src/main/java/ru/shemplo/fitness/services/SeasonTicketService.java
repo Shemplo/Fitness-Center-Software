@@ -2,31 +2,34 @@ package ru.shemplo.fitness.services;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.FitnessEvent;
 import ru.shemplo.fitness.entities.SeasonTicket;
+import ru.shemplo.fitness.utils.Utils;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SeasonTicketService {
     
-    private DBObjectUnwrapper objectUnwrapper;
-    private AppConfiguration configuration;
-    private DBManager database;
+    @NonNull private DBObjectUnwrapper objectUnwrapper;
+    @NonNull private AppConfiguration configuration;
+    @NonNull private DBManager database;
     
     public SeasonTicket createTicket (FitnessClient client, String secret, int visits) throws IOException {
         Integer nextID;
@@ -46,11 +49,8 @@ public class SeasonTicketService {
             ); 
         } catch (SQLException sqle) { throw new IOException (sqle); }
         
-        LocalDateTime dateTime = Instant.now ().atOffset (ZoneOffset.UTC)
-                               . toLocalDateTime ();
         SeasonTicket ticket = new SeasonTicket ();
-        
-        ticket.setLastTimeUpdated (dateTime);
+        ticket.setLastTimeUpdated (new Date ());
         ticket.setSecret (secret);
         ticket.setVisits (visits);
         ticket.setId (nextID);
@@ -58,7 +58,18 @@ public class SeasonTicketService {
         return ticket;
     }
     
-    private final LocalDateTime START_DATE = LocalDateTime.parse ("2019-03-20T00:00:00");
+    //private final LocalDateTime START_DATE = LocalDateTime.parse ("2019-03-20T00:00:00");
+    
+    @Snowflake (manual = true) private Date START_DATE = null;
+    
+    {
+        try {
+            START_DATE = new SimpleDateFormat ("dd.MM.yyyy HH:mm:ss")
+                       .parse ("20.03.2019 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
     
     public List <SeasonTicket> getAllTickets () throws IOException {
         return getAllTicketsAfter (START_DATE); // No events earlier can be
@@ -75,11 +86,12 @@ public class SeasonTicketService {
      * @throws IOException if failed to retrieve data from DB
      * 
      */
-    public List <SeasonTicket> getAllTicketsAfter (LocalDateTime dateTime) throws IOException {
+    public List <SeasonTicket> getAllTicketsAfter (Date dateTime) throws IOException {
         List <FitnessEvent> events;
         
         final String template = configuration.<String> get ("retrieve-all-by-type-after").get ();
-        final String date = dateTime.toString ().replace ('T', ' ');
+        //final String date = dateTime.toString ().replace ('T', ' ');
+        final String date = Utils.DATETIME_FORMAT.format (dateTime);
         
         final String request = String.format (template, "ticket", date);
         try   { events = database.retrieve (request, FitnessEvent.class); } 
@@ -131,7 +143,10 @@ public class SeasonTicketService {
         try   { events = database.retrieve (request, FitnessEvent.class); } 
         catch (SQLException sqle) { throw new IOException (sqle); }
         
-        return objectUnwrapper.unwrapTo (events, new SeasonTicket ());
+        SeasonTicket ticket = objectUnwrapper.unwrapTo (events, new SeasonTicket ());
+        if (!ticket.isCompleted ()) { throw new IOException ("Ticket not found"); }
+        
+        return ticket;
     }
     
     /**

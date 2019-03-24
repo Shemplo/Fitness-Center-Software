@@ -1,11 +1,11 @@
 package ru.shemplo.fitness.entities;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public interface Updatable {
     
-    public void setLastTimeUpdated (LocalDateTime dateTime);
+    public void setLastTimeUpdated (Date dateTime);
     
-    public LocalDateTime getLastTimeUpdated ();
+    public Date getLastTimeUpdated ();
     
 }

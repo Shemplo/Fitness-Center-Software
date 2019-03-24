@@ -31,15 +31,15 @@ public class AppConfiguration {
         try (
             InputStream is = Files.newInputStream (path);
         ) {
-            readConfigurationFile(is);
+            readConfigurationFile (is);
         }
     }
 
     public void readConfigurationFile (File file) throws IOException {
         try (
-                InputStream is = new FileInputStream(file);
+            InputStream is = new FileInputStream (file);
         ) {
-            readConfigurationFile(is);
+            readConfigurationFile (is);
         }
     }
 

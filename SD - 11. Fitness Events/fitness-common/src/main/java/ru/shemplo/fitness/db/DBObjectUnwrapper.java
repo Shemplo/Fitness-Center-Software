@@ -5,15 +5,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.shemplo.fitness.entities.FitnessEvent;
+import ru.shemplo.fitness.entities.Identifiable;
 import ru.shemplo.fitness.entities.Updatable;
+import ru.shemplo.fitness.utils.Utils;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
@@ -42,7 +43,7 @@ public class DBObjectUnwrapper {
         return object;
     }
     
-    public <T extends Updatable> T unwrapTo (List <FitnessEvent> sequence, T instance) {
+    public <T extends Updatable & Identifiable> T unwrapTo (List <FitnessEvent> sequence, T instance) {
         Map <String, Method> setters = new HashMap <> ();
         for (Method method : instance.getClass ().getDeclaredMethods ()) {
             String name = method.getName ().toLowerCase ();
@@ -81,12 +82,16 @@ public class DBObjectUnwrapper {
                         e.printStackTrace ();
                         return; // failed to call this setter
                     }
-                } else if (LocalDate.class.isAssignableFrom (argument)) {
+                /*else if (LocalDate.class.isAssignableFrom (argument)) {
                     if   (i == 0) { value = LocalDate.parse (event.getPropertyValue ()); } 
                     else { value = event.getDate ().toLocalDateTime ().toLocalDate (); }
                 } else if (LocalDateTime.class.isAssignableFrom (argument)) {
                     if   (i == 0) { value = LocalDateTime.parse (event.getPropertyValue ()); } 
                     else { value = event.getDate ().toLocalDateTime (); }
+                }*/ 
+                } else if (Date.class.isAssignableFrom (argument)) {
+                    if   (i == 0) { value = Utils.parseDate (event.getPropertyValue ()); } 
+                    else { value = event.getDate (); }
                 } else {
                     System.err.println ("Unknow type: " + argument);
                     return; // unsupported type of field, no chances to insert
@@ -101,13 +106,15 @@ public class DBObjectUnwrapper {
                 return; // failed to call this setter
             }
             
-            instance.setLastTimeUpdated (event.getDate ().toLocalDateTime ());
+            instance.setId (event.getObjectId ());
+            instance.setLastTimeUpdated (event.getDate ());
         });
         
         return instance;
     }
     
-    public <T extends Updatable> T unwrap (List <FitnessEvent> sequence, Class <T> type) throws IOException {
+    public <T extends Updatable & Identifiable> T unwrap (List <FitnessEvent> sequence, Class <T> type) 
+            throws IOException {
         return unwrapTo (sequence, makeRawInstance (type));
     }
     
