@@ -31,11 +31,7 @@
         <Separator orientation="VERTICAL" />
 
         <!-- Right part with Season Ticked data -->
-        <VBox HBox.hgrow="ALWAYS">
-            <ScrollPane pannable="true" hbarPolicy="NEVER"
-                    VBox.vgrow="ALWAYS">
-                <HBox fx:id="clientDetails" />
-            </ScrollPane>
-        </VBox>
+        <ScrollPane fx:id="clientDetails" fitToWidth="true" fitToHeight="true" pannable="true" hbarPolicy="NEVER"
+                    HBox.hgrow="ALWAYS"/>
     </HBox>
 </StackPane>
