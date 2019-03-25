@@ -1,5 +1,6 @@
 package ru.shemplo.fitness.app;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -7,8 +8,6 @@ import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.LoaderManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -16,13 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import ru.shemplo.fitness.app.services.TicketService;
+
+public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -94,10 +91,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processPass(String id) {
-        Log.d(TAG, "Pass ID: " + id);
-        showToast("Pass ID: " + id);
-
-        //new DatabaseRequestTask(this).execute(id);
+        Log.d(TAG, "Pass ID: [" + id + "]");
+        new DatabaseRequestTask(this).execute(id);
     }
 
     @Override
@@ -114,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             case NfcAdapter.ACTION_TECH_DISCOVERED:
                 byte[] extraIdBytes = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
                 if (extraIdBytes != null) {
-                    String extraId = Base64.encodeToString(extraIdBytes, Base64.DEFAULT);
+                    String extraId = Base64.encodeToString(extraIdBytes, Base64.DEFAULT).trim();
                     processPass(extraId);
                 }
             default:
@@ -149,6 +144,71 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static class DatabaseRequestTask extends AsyncTask<String, Integer, Integer> {
+
+        private WeakReference<MainActivity> contextReference;
+
+        DatabaseRequestTask(MainActivity context) {
+            this.contextReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Integer doInBackground(String... args) {
+            try {
+                String id = args[0];
+
+                TicketService service = new TicketService();
+                int visits = service.getVisitOfTicketBySecret(id);
+                Log.d(TAG, "Visits: " + visits);
+                return visits;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                cancel(true);
+            }
+            return -1;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            MainActivity context = contextReference.get();
+            if (context == null) return;
+
+            context.isProcessing = true;
+            context.showLoading();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            final MainActivity context = contextReference.get();
+            if (context == null) return;
+
+            context.isProcessing = false;
+            context.showToast("Visits left: " + (result - 1));
+            if (result > 0) {
+                context.showPass();
+            } else {
+                context.showFail();
+            }
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    context.showNfc();
+                }
+            }, 3000);
+        }
+
+        @Override
+        protected void onCancelled() {
+            MainActivity context = contextReference.get();
+            if (context == null) return;
+
+            context.isProcessing = false;
+            context.showNfc();
+        }
+    }
 }
 
 
