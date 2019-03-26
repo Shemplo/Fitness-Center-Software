@@ -1,11 +1,13 @@
 package ru.shemplo.fitness.administration.services;
 
 import static javafx.collections.FXCollections.*;
+import static ru.shemplo.fitness.services.AbsService.*;
 
 import java.time.LocalDateTime;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -20,16 +22,14 @@ import ru.shemplo.snowball.annot.processor.SnowflakeInitializer;
 public class FXClientsListService extends Service <List <FitnessClient>> {
     
     private static final Comparator <FitnessClient> LEXICOGRAPHIC_ORDER 
-          = (a, b) -> a.getName ().compareToIgnoreCase (b.getName ());
+          = (a, b) -> a.getLastName ().compareToIgnoreCase (b.getLastName ());
 
-    private final ListView <FitnessClient> listView;
     private FitnessClientService clientService;
     
     @Snowflake (manual = true) private LocalDateTime lastUpdate;
     
     public FXClientsListService (final ListView <FitnessClient> listView) {
         SnowflakeInitializer.initFields (Snowball.getContext (), this);
-        this.listView = listView;
         
         setOnSucceeded (wse -> {
             final List <FitnessClient> clients = getValue ();
@@ -41,7 +41,16 @@ public class FXClientsListService extends Service <List <FitnessClient>> {
     
     @Override
     protected Task <List <FitnessClient>> createTask () {
-        return null;
+        return new Task <List<FitnessClient>> () {
+            
+            @Override 
+            protected List <FitnessClient> call () throws Exception {
+                LocalDateTime from = Optional.ofNullable (lastUpdate)
+                                   . orElse (getStartDate ());
+                return clientService.getAllAfter (from);
+            }
+            
+        };
     }
     
 }

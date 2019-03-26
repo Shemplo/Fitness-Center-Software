@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -14,24 +10,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.image.ImageView?>
 
 <?import javafx.scene.layout.Pane?>
 <VBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.shemplo.fitness.administration.gfx.ClientController"
       alignment="TOP_CENTER" spacing="25" minWidth="400">
     <padding>
         <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
 
-    <HBox alignment="CENTER_LEFT">
-        <Button text="save" />
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button fx:id="saveClientDetails" text="save" />
+        <Button fx:id="" text="reset" />
     </HBox>
 
-    <VBox>
+    <VBox alignment="TOP_CENTER">
         <HBox spacing="20">
             <VBox spacing="20">
                 <VBox spacing="10" alignment="TOP_CENTER">
@@ -43,7 +37,7 @@
             <VBox spacing="20">
                 <HBox alignment="CENTER_LEFT" spacing="5">
                     <Label text="Profile ID" minWidth="90"/>
-                    <TextField HBox.hgrow="ALWAYS" disable="true"/>
+                    <TextField fx:id="idF" HBox.hgrow="ALWAYS" disable="true"/>
                 </HBox>
 
                 <VBox spacing="10">
@@ -53,15 +47,15 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="First name" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="firstNameF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Second name" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="secondNameF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Last name" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="lastNameF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 
@@ -72,11 +66,11 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Organization" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="organizationF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Position" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="positionF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 
@@ -87,29 +81,29 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Country" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="countryF" HBox.hgrow="ALWAYS"/>
 
                         <Label text="State" minWidth="90" alignment="CENTER_RIGHT"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="stateF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="City/Town" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="cityF" HBox.hgrow="ALWAYS"/>
 
                         <Label text="District" minWidth="90" alignment="CENTER_RIGHT"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="districtF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Phone" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="phoneF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Email" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="emailF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Home page" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="homePageF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 
@@ -120,7 +114,7 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Birthday" minWidth="90"/>
-                        <DatePicker HBox.hgrow="ALWAYS"/>
+                        <DatePicker fx:id="birthdayF" HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sex" minWidth="90" alignment="CENTER_RIGHT"/>
                         <HBox alignment="CENTER_LEFT" spacing="10">
@@ -133,7 +127,7 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Remark" minWidth="90"/>
-                        <TextField HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="remarkF" HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
             </VBox>
