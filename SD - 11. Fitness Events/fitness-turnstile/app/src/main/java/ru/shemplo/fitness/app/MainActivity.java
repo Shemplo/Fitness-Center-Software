@@ -1,5 +1,6 @@
 package ru.shemplo.fitness.app;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -7,7 +8,6 @@ import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -15,23 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
-import ru.shemplo.fitness.AppConfiguration;
-import ru.shemplo.fitness.db.DBManager;
-import ru.shemplo.fitness.db.DBObjectUnwrapper;
-import ru.shemplo.fitness.db.DefaultDBManager;
-import ru.shemplo.fitness.entities.FitnessClient;
-import ru.shemplo.fitness.entities.SeasonTicket;
-import ru.shemplo.fitness.services.FitnessClientService;
-import ru.shemplo.fitness.services.SeasonTicketService;
-import ru.shemplo.snowball.annot.Wind;
+import ru.shemplo.fitness.app.services.TicketService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -103,9 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processPass(String id) {
-        Log.d(TAG, "Pass ID: " + id);
-        showToast("Pass ID: " + id);
-
+        Log.d(TAG, "Pass ID: [" + id + "]");
         new DatabaseRequestTask(this).execute(id);
     }
 
@@ -123,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             case NfcAdapter.ACTION_TECH_DISCOVERED:
                 byte[] extraIdBytes = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
                 if (extraIdBytes != null) {
-                    String extraId = Base64.encodeToString(extraIdBytes, Base64.DEFAULT);
+                    String extraId = Base64.encodeToString(extraIdBytes, Base64.DEFAULT).trim();
                     processPass(extraId);
                 }
             default:
@@ -158,73 +144,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Wind(blow = {AppConfiguration.class, SeasonTicketService.class,
-            DBManager.class})
-    private static class DatabaseRequestTask extends AsyncTask<String, Integer, String> {
+    private static class DatabaseRequestTask extends AsyncTask<String, Integer, Integer> {
 
         private WeakReference<MainActivity> contextReference;
-        private static AppConfiguration configuration = new AppConfiguration();
-        private static DBObjectUnwrapper unwrapper = new DBObjectUnwrapper();
-        private static DBManager manager = new DefaultDBManager(unwrapper, configuration);
-        private static SeasonTicketService seasonTicketService = new SeasonTicketService(unwrapper, configuration, manager);
-        private static FitnessClientService clientService = new FitnessClientService(unwrapper, configuration, manager);
 
         DatabaseRequestTask(MainActivity context) {
             this.contextReference = new WeakReference<>(context);
         }
 
         @Override
-        protected String doInBackground(String... args) {
-            InputStream in = null;
+        protected Integer doInBackground(String... args) {
             try {
                 String id = args[0];
 
-                // TODO: Replace with database request
-
-                try (InputStream is = contextReference.get().getResources().openRawResource(R.raw.config)) {
-                    configuration.readConfigurationFile(is);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-
-                try {
-                    FitnessClient client = clientService.getClientByID(0);
-                    Log.d(TAG, client.toString());
-
-                    //System.out.println (seasonTicketService.createTicket (client, "secret for 2 ticket", 7));
-                    List<SeasonTicket> tickets = seasonTicketService.getTicketsByClient(client);
-//                    tickets.stream ().map (t -> {
-//                        try   { return seasonTicketService.updateTicket (t); }
-//                        catch (IOException e) {}
-//
-//                        return t;
-//                    }).forEach (System.out::println);
-
-                    Log.d(TAG, seasonTicketService.getTicketBySecret(id).toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                HttpURLConnection conn = (HttpURLConnection) new URL("https://ya.ru/").openConnection();
-                conn.connect();
-                in = conn.getInputStream();
-                while (in.available() > 0) {
-                    int ignored = in.read();
-                }
+                TicketService service = new TicketService();
+                int visits = service.getVisitOfTicketBySecret(id);
+                Log.d(TAG, "Visits: " + visits);
+                return visits;
 
             } catch (IOException e) {
                 e.printStackTrace();
                 cancel(true);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        Log.e(TAG, "Exception while closing inputstream" + e);
-                    }
-                }
             }
-            return "OK";
+            return -1;
         }
 
         @Override
@@ -237,12 +179,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Integer result) {
             final MainActivity context = contextReference.get();
             if (context == null) return;
 
             context.isProcessing = false;
-            if (result.equals("OK")) {
+            context.showToast("Visits left: " + (result - 1));
+            if (result > 0) {
                 context.showPass();
             } else {
                 context.showFail();

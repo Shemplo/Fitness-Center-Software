@@ -5,6 +5,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -82,13 +84,12 @@ public class DBObjectUnwrapper {
                         e.printStackTrace ();
                         return; // failed to call this setter
                     }
-                /*else if (LocalDate.class.isAssignableFrom (argument)) {
+                } else if (LocalDate.class.isAssignableFrom (argument)) {
                     if   (i == 0) { value = LocalDate.parse (event.getPropertyValue ()); } 
                     else { value = event.getDate ().toLocalDateTime ().toLocalDate (); }
                 } else if (LocalDateTime.class.isAssignableFrom (argument)) {
                     if   (i == 0) { value = LocalDateTime.parse (event.getPropertyValue ()); } 
                     else { value = event.getDate ().toLocalDateTime (); }
-                }*/ 
                 } else if (Date.class.isAssignableFrom (argument)) {
                     if   (i == 0) { value = Utils.parseDate (event.getPropertyValue ()); } 
                     else { value = event.getDate (); }
@@ -107,7 +108,8 @@ public class DBObjectUnwrapper {
             }
             
             instance.setId (event.getObjectId ());
-            instance.setLastTimeUpdated (event.getDate ());
+            //instance.setLastTimeUpdated (event.getDate ());
+            instance.setLastTimeUpdated (event.getDate ().toLocalDateTime ());
         });
         
         return instance;

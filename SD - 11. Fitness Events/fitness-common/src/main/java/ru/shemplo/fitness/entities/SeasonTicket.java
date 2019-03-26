@@ -1,6 +1,6 @@
 package ru.shemplo.fitness.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,21 +16,21 @@ public class SeasonTicket implements Completable, Updatable, Identifiable {
     
     private Integer id, visits, client;
     
-    private Date lastTimeUsed, lastTimeUpdated;
+    private LocalDateTime lastTimeUsed, lastTimeUpdated;
     
-    public void createTicket (String value, Date when) {
+    public void createTicket (String value, LocalDateTime when) {
         lastTimeUpdated = when;
     }
     
-    public void addVisits (Integer delta, Date when) {
+    public void addVisits (Integer delta, LocalDateTime when) {
         changeVisits (Math.abs (delta), when);
     }
     
-    public void subtractVisits (Integer delta, Date when) {
+    public void subtractVisits (Integer delta, LocalDateTime when) {
         changeVisits (-Math.abs (delta), when);
     }
     
-    public void changeVisits (Integer delta, Date when) {
+    public void changeVisits (Integer delta, LocalDateTime when) {
         visits = visits == null ? delta : visits + delta;
         visits = Math.max (0, visits);
         lastTimeUpdated = when;
