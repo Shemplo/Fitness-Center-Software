@@ -47,6 +47,8 @@ public class RunFitnessAdministration extends Snowball {
             }).forEach (System.out::println);
             
             System.out.println (seasonTicketService.getTicketBySecret ("some secret value"));
+            
+            clientService.getAll ().forEach (System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
         }

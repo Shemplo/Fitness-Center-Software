@@ -8,21 +8,16 @@ import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.AllArgsConstructor;
-import ru.shemplo.fitness.AppConfiguration;
-import ru.shemplo.fitness.db.DBManager;
-import ru.shemplo.fitness.db.DBObjectUnwrapper;
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.FitnessEvent;
 import ru.shemplo.snowball.annot.Snowflake;
 
 @Snowflake
-@AllArgsConstructor
-public class FitnessClientService {
+public class FitnessClientService extends AbsService <FitnessClient> {
     
-    private DBObjectUnwrapper objectUnwrapper;
-    private AppConfiguration configuration;
-    private DBManager database;
+    public FitnessClientService () {
+        super (FitnessClient.class);
+    }
     
     public FitnessClient createClient (Map <String, String> data) throws IOException {
         Integer nextID;

@@ -1,144 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<StackPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="ru.shemplo.fitness.administration.gfx.ClientController"
-           style="-fx-background-color: red;">
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.layout.Pane?>
+<VBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.shemplo.fitness.administration.gfx.ClientController"
+      alignment="TOP_CENTER" spacing="25" minWidth="400">
     <padding>
-        <Insets bottom="10" left="10" right="10" top="10"/>
+        <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
 
-    <!--<HBox style="-fx-background-color: blue;"><Label>Test</Label></HBox>-->
+    <HBox alignment="CENTER_LEFT">
+        <Button text="save" />
+    </HBox>
 
-    <VBox maxHeight="1000" maxWidth="1000">
-        <HBox alignment="CENTER_RIGHT">
-            <Button text="save"/>
-        </HBox>
-
-        <VBox spacing="10">
-            <Label text="Personal information:"/>
-
-            <GridPane hgap="15" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                </columnConstraints>
-
-                <!-- 1 row -->
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="0"
-                      GridPane.rowIndex="0">
-                    <Label text="Name:"/>
-                    <TextField/>
-                </HBox>
-
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="1"
-                      GridPane.rowIndex="0">
-                    <Label text="Last name:"/>
-                    <TextField/>
-                </HBox>
-
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="2"
-                      GridPane.rowIndex="0">
-                    <Label text="Second name:"/>
-                    <TextField/>
-                </HBox>
-
-                <!-- 2 row -->
-                <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS"
-                      GridPane.columnIndex="0"
-                      GridPane.columnSpan="1"
-                      GridPane.rowIndex="1">
-                    <Label text="Sex:"/>
-                    <RadioButton text="female"/>
-                    <RadioButton text="male"/>
-                </HBox>
-
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="1"
-                      GridPane.rowIndex="1">
-                    <Label text="Birthday:"/>
-                    <DatePicker/>
-                </HBox>
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="2"
-                      GridPane.rowIndex="1">
-                    <Label text="Language:"/>
-                    <ChoiceBox/>
-                </HBox>
-            </GridPane>
-        </VBox>
-
-        <VBox spacing="10">
-            <Label text="Contacts information:"/>
-
-            <GridPane hgap="15" vgap="10">
-                <!-- 1 row -->
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="0"
-                      GridPane.rowIndex="0">
-                    <Label text="Phone:"/>
-                    <TextField/>
-                </HBox>
-
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="1"
-                      GridPane.rowIndex="0">
-                    <Label text="Reserve phone:"/>
-                    <TextField/>
-                </HBox>
-
-                <HBox alignment="CENTER_RIGHT" spacing="5"
-                      GridPane.columnIndex="2"
-                      GridPane.rowIndex="0">
-                    <Label text="E-mail:"/>
-                    <TextField/>
-                </HBox>
-            </GridPane>
-        </VBox>
-
+    <VBox>
         <HBox spacing="20">
-            <VBox spacing="10">
-                <Label text="Season tickets:"/>
-
-                <ListView VBox.vgrow="ALWAYS"/>
+            <VBox spacing="20">
+                <VBox spacing="10" alignment="TOP_CENTER">
+                    <ImageView fitWidth="128" fitHeight="128" />
+                    <Button text="Change image" disable="true"/>
+                </VBox>
             </VBox>
 
-            <VBox spacing="10">
-                <Label text="Visit statistics:"/>
+            <VBox spacing="20">
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Profile ID" minWidth="90"/>
+                    <TextField HBox.hgrow="ALWAYS" disable="true"/>
+                </HBox>
 
-                <VBox>
-                    <Label text="Visit frequency:"/>
-
-                    <LineChart maxHeight="50">
-                        <xAxis>
-                            <CategoryAxis side="BOTTOM"/>
-                        </xAxis>
-                        <yAxis>
-                            <CategoryAxis side="LEFT"/>
-                        </yAxis>
-                    </LineChart>
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Name"/>
+                        <Separator HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="First name" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Second name" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Last name" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
                 </VBox>
 
-                <VBox maxHeight="50">
-                    <Label text="Visit duration:"/>
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Profession"/>
+                        <Separator HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Organization" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Position" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
 
-                    <LineChart>
-                        <xAxis>
-                            <CategoryAxis side="BOTTOM"/>
-                        </xAxis>
-                        <yAxis>
-                            <CategoryAxis side="LEFT"/>
-                        </yAxis>
-                    </LineChart>
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Coordinates"/>
+                        <Separator HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Country" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+
+                        <Label text="State" minWidth="90" alignment="CENTER_RIGHT"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="City/Town" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+
+                        <Label text="District" minWidth="90" alignment="CENTER_RIGHT"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Phone" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Email" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Home page" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Other"/>
+                        <Separator HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Birthday" minWidth="90"/>
+                        <DatePicker HBox.hgrow="ALWAYS"/>
+
+                        <Label text="Sex" minWidth="90" alignment="CENTER_RIGHT"/>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <padding>
+                                <Insets left="10" right="10" />
+                            </padding>
+                            <RadioButton text="Male"/>
+                            <RadioButton text="Female"/>
+                        </HBox>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Remark" minWidth="90"/>
+                        <TextField HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <VBox spacing="20">
+                <VBox spacing="10" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="List of Season Tickets:"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button text="add new"/>
+                    </HBox>
+                    <ListView VBox.vgrow="ALWAYS" />
                 </VBox>
             </VBox>
         </HBox>
     </VBox>
-</StackPane>
+</VBox>

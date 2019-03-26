@@ -1,6 +1,7 @@
 package ru.shemplo.fitness.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +12,22 @@ import ru.shemplo.fitness.services.FitnessClientService;
 @ToString
 @Getter @Setter
 @NoArgsConstructor
-public class FitnessClient implements Updatable, Identifiable {
+public class FitnessClient implements Updatable, Identifiable, Completable {
     
     private Integer id;
     
     private String name, secondName, lastName;
     
-    private Date birthday;
+    private LocalDate birthday;
     
     /**
      * Only for update via {@link FitnessClientService#updateClient(FitnessClient)} purposes
      */
-    private Date lastTimeUpdated;
+    private LocalDateTime lastTimeUpdated;
+
+    @Override
+    public boolean isCompleted () {
+        return id != null && name != null && lastName != null;
+    }
     
 }
