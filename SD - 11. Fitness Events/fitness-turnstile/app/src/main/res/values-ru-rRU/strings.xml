@@ -7,4 +7,6 @@
     <string name="nfc_pass">Пропуск принят</string>
     <string name="nfc_processing">Обработка…</string>
     <string name="nfc_not_supported">Это устройство не поддерживает NFC</string>
+    <string name="visits_left">Осталось посещений:</string>
+    <string name="error">Ошибка</string>
 </resources>

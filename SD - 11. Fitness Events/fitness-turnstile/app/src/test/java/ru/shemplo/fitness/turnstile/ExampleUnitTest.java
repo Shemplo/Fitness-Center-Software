@@ -1,4 +1,4 @@
-package ru.shemplo.fitness.app;
+package ru.shemplo.fitness.turnstile;
 
 import org.junit.Test;
 

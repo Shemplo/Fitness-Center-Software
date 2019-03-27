@@ -14,7 +14,7 @@
         android:gravity="center"
         android:text="@string/nfc_waiting"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorWait"
         android:textSize="@dimen/scanner_text_size" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:gravity="center"
         android:text="@string/nfc_pass"
         android:textAlignment="center"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/colorPass"
         android:textSize="@dimen/scanner_text_size"
         android:visibility="gone" />
 
@@ -39,7 +39,7 @@
         android:gravity="center"
         android:text="@string/nfc_fail"
         android:textAlignment="center"
-        android:textColor="@color/secondaryColor"
+        android:textColor="@color/colorFail"
         android:textSize="@dimen/scanner_text_size"
         android:visibility="gone" />
 
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:text="@string/nfc_processing"
             android:textAlignment="center"
-            android:textColor="@color/secondaryTextColor"
+            android:textColor="@color/colorProcessing"
             android:textSize="@dimen/scanner_text_size" />
     </LinearLayout>
 
