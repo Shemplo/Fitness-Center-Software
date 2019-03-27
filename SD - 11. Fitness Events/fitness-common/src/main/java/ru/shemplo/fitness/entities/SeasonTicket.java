@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class SeasonTicket implements Completable, Updatable, Identifiable { 
     
-    private String secret;
+    private String secret, name;
     
     private Integer id, visits, client;
     

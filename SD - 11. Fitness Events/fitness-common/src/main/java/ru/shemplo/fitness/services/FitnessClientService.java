@@ -1,7 +1,6 @@
 package ru.shemplo.fitness.services;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.FitnessEvent;
@@ -22,59 +20,6 @@ public class FitnessClientService extends AbsService <FitnessClient> {
     
     public FitnessClientService () {
         super (FitnessClient.class);
-    }
-    
-    public FitnessClient createClient (Map <String, String> data) throws IOException {
-        Integer nextID;
-        try   { nextID = database.runFunction ("SELECT GET_NEXT_ID_FOR ('client');"); } 
-        catch (SQLException sqle) { throw new IOException (sqle); }
-        
-        try { 
-            String template = configuration.<String> get ("create-client-data").get ();
-            database.update (String.format (template, nextID)); 
-        } catch (SQLException sqle) { throw new IOException (sqle); }
-        
-        return updateClientData (nextID, data);
-    }
-    
-    public FitnessClient updateClientData (int clientID, Map <String, String> data) throws IOException {        
-        try { 
-            String template = configuration.<String> get ("update-client-data").get ();
-            String [] requests = new String [data.size ()];
-            AtomicInteger index = new AtomicInteger ();
-            data.forEach ((key, value) -> {
-                requests [index.get ()] = String.format (template, clientID, key, value);
-                index.incrementAndGet ();
-            });
-            
-            database.update (requests); 
-        } catch (SQLException sqle) { throw new IOException (sqle); }
-        
-        return getClientByID (clientID);
-    }
-    
-    public FitnessClient getClientByID (int clientID) throws IOException {
-        try { 
-            final String template = configuration.<String> get ("retrieve-client-data").get ();
-            String request = String.format (template, clientID);
-            
-            List <FitnessEvent> sequence = database.retrieve (request, FitnessEvent.class);
-            FitnessClient client = objectUnwrapper.unwrap (sequence, FitnessClient.class);
-            client.setId (clientID);
-            return client;
-        } catch (SQLException sqle) { throw new IOException (sqle); }
-    }
-    
-    public FitnessClient updateClient (FitnessClient client) throws IOException {
-        String template = configuration.<String> get ("retrieve-by-id-type-after").get ();
-        String request = String.format (template, "client", client.getId (), 
-                                              client.getLastTimeUpdated ());
-        
-        List <FitnessEvent> events;
-        try   { events = database.retrieve (request, FitnessEvent.class); } 
-        catch (SQLException sqle) { throw new IOException (sqle); }
-        
-        return objectUnwrapper.unwrapTo (events, client);
     }
     
     public Pair <List <FitnessClient>, Boolean> updateClients (List <FitnessClient> clients, 

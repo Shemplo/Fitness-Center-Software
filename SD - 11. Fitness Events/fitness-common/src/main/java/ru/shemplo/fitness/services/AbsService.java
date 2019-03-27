@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.shemplo.fitness.AppConfiguration;
@@ -24,6 +26,40 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
     protected DBManager database;
     
     protected final Class <T> TOKEN;
+    
+    public T create (Map <String, String> data) throws IOException {
+        Integer nextID;
+        
+        String objectClass = TOKEN.getSimpleName ().toLowerCase ();
+        String request = String.format ("SELECT GET_NEXT_ID_FOR ('%s');", objectClass);
+        try   { nextID = database.runFunction (request); } 
+        catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        try { 
+            String template = configuration.<String> get ("create-data-by-type").get ();
+            database.update (String.format (template, objectClass, nextID)); 
+        } catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        return updateData (nextID, data);
+    }
+    
+    public T updateData (int objectID, Map <String, String> data) throws IOException {        
+        try { 
+            String template = configuration.<String> get ("update-data-by-type").get ();
+            String objectClass = TOKEN.getSimpleName ().toLowerCase ();
+            String [] requests = new String [data.size ()];
+            AtomicInteger index = new AtomicInteger ();
+            data.forEach ((key, value) -> {
+                requests [index.get ()] = String.format (template, 
+                               objectClass, objectID, key, value);
+                index.incrementAndGet ();
+            });
+            
+            database.update (requests); 
+        } catch (SQLException sqle) { throw new IOException (sqle); }
+        
+        return getByID (objectID);
+    }
     
     @Getter protected static final LocalDateTime startDate 
           = LocalDateTime.parse ("2019-03-18T00:00:00");

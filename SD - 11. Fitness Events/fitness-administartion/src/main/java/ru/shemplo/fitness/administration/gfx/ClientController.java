@@ -1,12 +1,14 @@
 package ru.shemplo.fitness.administration.gfx;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,10 +16,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.VBox;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.shemplo.fitness.administration.services.FXClientUpdateService;
+import ru.shemplo.fitness.administration.services.FXTicketUpdateService;
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.SeasonTicket;
 
@@ -30,9 +34,12 @@ public class ClientController implements Initializable, AutoCloseable {
     
     private FitnessClient changedClient = new FitnessClient ();
     
-    @FXML private Button saveClientDetails, resetClientDetails;
+    @FXML private Button saveClientDetails, resetClientDetails,
+                         saveTicketDetails, addTicket;
     
     @FXML private ListView <SeasonTicket> ticketsList;
+    
+    @Getter @FXML private VBox ticketDetails;
     
     @FXML private TextField 
         idF, 
@@ -41,11 +48,16 @@ public class ClientController implements Initializable, AutoCloseable {
         organizationF, positionF,
         countryF, stateF, cityF, districtF,
         phoneF, emailF, homePageF,
-        remarkF;
+        remarkF,
+        
+        ticketNameF, ticketSecretF,
+        ticketVisitsF, ticketLastUsedF;
     
     @Override
     public void initialize (URL location, ResourceBundle resources) {
         bindFields (); initializeFields ();
+        
+        ticketsList.setCellFactory (__ -> new TicketCell (this));
         
         saveClientDetails.setOnMouseClicked (me -> {
             if (!MouseButton.PRIMARY.equals (me.getButton ())) {
@@ -61,10 +73,36 @@ public class ClientController implements Initializable, AutoCloseable {
                 initializeFields (); // hard override of all fields
             }
         });
+        
+        saveTicketDetails.setOnMouseClicked (me -> {
+            if (!MouseButton.PRIMARY.equals (me.getButton ())) {
+                return;
+            }
+            
+            new FXTicketUpdateService (this, ticket, changedTicket)
+            . restart ();
+        });
+        
+        addTicket.setOnMouseClicked (me -> {
+            if (MouseButton.PRIMARY.equals (me.getButton ())) {
+                onTicketSelected (new SeasonTicket ());
+            }
+        });
     }
     
     public void currentClientUpdated () {
         initializeFields ();
+    }
+    
+    private SeasonTicket ticket, changedTicket = new SeasonTicket ();
+    
+    public synchronized void onTicketSelected (SeasonTicket ticket) {
+        this.ticket = ticket;
+        
+        Platform.runLater (() -> {
+            ticketDetails.setDisable (false);
+            initializeFields ();
+        });
     }
     
     public void initializeFields () {
@@ -87,6 +125,20 @@ public class ClientController implements Initializable, AutoCloseable {
                                     . filter  (t -> t.getClient ().equals (client.getId ()))
                                     . collect (Collectors.toList ());
         ticketsList.setItems (FXCollections.observableArrayList (tickets));
+        ticketsList.getItems ().sort ((a, b) -> a.getName ().compareTo (b.getName ()));
+        ticketsList.refresh  ();
+        
+        SeasonTicket ticket = this.ticket;
+        if (ticket != null) {
+            ticketNameF.        setText (Optional.ofNullable (ticket.getName ()).orElse (""));
+            ticketSecretF.      setText (Optional.ofNullable (ticket.getSecret ()).orElse (""));
+            ticketVisitsF.      setText ("" + Optional.ofNullable (ticket.getVisits ()).orElse (0));
+            
+            final LocalDateTime dateTime = ticket.getLastTimeUsed ();
+            ticketLastUsedF.setText (dateTime != null ? dateTime.toString () : "");
+        }
+        
+        changedTicket.setClient (client.getId ());
     }
     
     private void bindFields () {
@@ -104,6 +156,21 @@ public class ClientController implements Initializable, AutoCloseable {
         emailF.       textProperty ().addListener ((__, ___, v) -> changedClient.setEmail (v));
         homePageF.    textProperty ().addListener ((__, ___, v) -> changedClient.setHomePage (v));
         remarkF.      textProperty ().addListener ((__, ___, v) -> changedClient.setRemark (v));
+        
+        ticketNameF.        textProperty ().addListener ((__, ___, v) -> changedTicket.setName (v));
+        ticketSecretF.      textProperty ().addListener ((__, ___, v) -> changedTicket.setSecret (v));
+        ticketLastUsedF.textProperty ().addListener ((__, ___, v) -> {
+            LocalDateTime set = null;
+            
+            if (v.length () > 0) { set = LocalDateTime.parse (v); }
+            changedTicket.setLastTimeUsed (set);
+        });
+        ticketVisitsF.      textProperty ().addListener ((__, ___, v) -> {
+            Integer value = null;
+            try   { value = Integer.parseInt (v); }
+            catch (NumberFormatException nfe) {}
+            changedTicket.setVisits (value);
+        });
     }
 
     @Override

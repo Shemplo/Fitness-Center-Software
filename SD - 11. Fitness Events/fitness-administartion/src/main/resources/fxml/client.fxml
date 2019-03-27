@@ -128,15 +128,20 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Name" minWidth="90"/>
-                            <TextField HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="ticketNameF" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Secret" minWidth="90"/>
-                            <TextField HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="ticketSecretF" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Visits" minWidth="90"/>
-                            <TextField HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="ticketVisitsF" HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                            <Label text="Last visit" minWidth="90"/>
+                            <TextField fx:id="ticketLastUsedF" HBox.hgrow="ALWAYS"
+                                disable="true"/>
                         </HBox>
                     </VBox>
 
@@ -144,7 +149,7 @@
                     <HBox alignment="CENTER_LEFT">
                         <Label text="List of Season Tickets:"/>
                         <Pane HBox.hgrow="ALWAYS"/>
-                        <Button text="add new"/>
+                        <Button fx:id="addTicket" text="add new"/>
                     </HBox>
                     <ListView fx:id="ticketsList" VBox.vgrow="ALWAYS"/>
                 </VBox>

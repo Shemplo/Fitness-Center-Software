@@ -6,52 +6,49 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import ru.shemplo.fitness.administration.gfx.ClientController;
-import ru.shemplo.fitness.entities.FitnessClient;
-import ru.shemplo.fitness.services.FitnessClientService;
+import ru.shemplo.fitness.entities.SeasonTicket;
+import ru.shemplo.fitness.services.SeasonTicketService;
 import ru.shemplo.fitness.utils.Utils;
 import ru.shemplo.snowball.annot.processor.Snowball;
 import ru.shemplo.snowball.annot.processor.SnowflakeInitializer;
 
-public class FXClientUpdateService extends Service <FitnessClient> {
+public class FXTicketUpdateService extends Service <SeasonTicket> {
 
-    private FitnessClientService clientService;
+    private SeasonTicketService ticketService;
     
-    private final FitnessClient current, changed;
+    private final SeasonTicket current, changed;
     
-    public FXClientUpdateService (ClientController controller, FitnessClient current,
-            FitnessClient changed) {
+    public FXTicketUpdateService (ClientController controller, SeasonTicket current,
+            SeasonTicket changed) {
         SnowflakeInitializer.initFields (Snowball.getContext (), this);
         this.current = current; this.changed = changed;
         
         setOnSucceeded (wse -> {
             if (getValue () == null) { return; }
             
-            if (current == null) {                
-                controller.getAdminController ().closeDetails ();
-            }
-            
-            controller.getAdminController ().getClientsList ()
-                      .refresh ();
+            controller.getTicketDetails ().setDisable (true);
+            controller.currentClientUpdated ();
         });
         
         setOnFailed (__ -> getException ().printStackTrace ());
     }
     
     @Override 
-    protected Task <FitnessClient> createTask () {
-        return new Task <FitnessClient> () {
+    protected Task <SeasonTicket> createTask () {
+        return new Task <SeasonTicket> () {
 
-            @Override protected FitnessClient call () throws Exception {
+            @Override protected SeasonTicket call () throws Exception {
                 Map <String, String> diff = Utils.findDiff (current, changed);
                 
                 if (current.getId () == null) { // new user
-                    if (!diff.containsKey ("firstname") || !diff.containsKey ("lastname")) {
-                        System.err.println ("Client name or last name is missed");
+                    System.out.println (diff);
+                    if (!diff.containsKey ("name") || !diff.containsKey ("secret")) {
+                        System.err.println ("Ticket name or secret is missed");
                         return null; // not enough data to create new client
                     }
                     
-                    FitnessClient client = clientService.create (diff);
-                    return client;
+                    SeasonTicket ticket = ticketService.create (diff);
+                    return ticket;
                 }
                 
                 if (diff.size () == 0) {
@@ -59,7 +56,10 @@ public class FXClientUpdateService extends Service <FitnessClient> {
                     return current;
                 }
                 
-                return clientService.updateData (current.getId (), diff);
+                // Unfortunately incremental change value of `visits` field
+                // is impossible and from this client it will be set only
+                // through `set` action in event
+                return ticketService.updateData (current.getId (), diff);
             }
             
         };

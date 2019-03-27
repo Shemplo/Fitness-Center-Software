@@ -1,36 +1,12 @@
-# Query template to create new Season Ticket without any data
-# Used by method SeasonTicketService.createTicket ()
-create-new-ticket:          INSERT 
+create-data-by-type:        INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`)
-                            VALUES ('seasonticket', '%d', 'ticket', 'create');
-
-# Query template to add secret identifier of Season Ticket    
-# Used by method SeasonTicketService.createTicket ()                      
-set-secret-to-ticket:       INSERT
+                            VALUES ('%s', '%d', 'instance', 'create');
+                            
+update-data-by-type:        INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`, `property_value`)
-                            VALUES ('seasonticket', '%d', 'secret', 'set', '%s');
-                            
-set-client-to-ticket:       INSERT
-                            INTO `events` (`object_class`, `object_id`, `property_name`, 
-                                           `property_action`, `property_value`)
-                            VALUES ('seasonticket', '%d', 'fitnessclient', 'set', '%d');
-                            
-change-visits-of-ticket:    INSERT
-                            INTO `events` (`object_class`, `object_id`, `property_name`, 
-                                           `property_action`, `property_value`)
-                            VALUES ('seasonticket', '%d', 'visits', '%s', '%d');
-                            
-create-client-data:         INSERT
-                            INTO `events` (`object_class`, `object_id`, `property_name`, 
-                                           `property_action`)
-                            VALUES ('fitnessclient', '%d', 'client', 'create');
-                            
-update-client-data:         INSERT
-                            INTO `events` (`object_class`, `object_id`, `property_name`, 
-                                           `property_action`, `property_value`)
-                            VALUES ('fitnessclient', '%d', '%s', 'set', '%s');
+                            VALUES ('%s', '%d', '%s', 'set', '%s');
                             
 retrieve-data-by-type-id:   SELECT `object_id`, `property_name`, `property_action`, `property_value`, `date`
                             FROM `events` WHERE `object_class` = '%s' AND `object_id` = '%d'
