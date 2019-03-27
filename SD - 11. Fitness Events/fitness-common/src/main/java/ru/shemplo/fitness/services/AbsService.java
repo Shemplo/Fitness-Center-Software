@@ -26,13 +26,13 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
     protected final Class <T> TOKEN;
     
     @Getter protected static final LocalDateTime startDate 
-          = LocalDateTime.parse ("2019-03-08T00:00:00");
+          = LocalDateTime.parse ("2019-03-18T00:00:00");
     
-    public List <T> getAll () throws IOException {
-        return getAllAfter (startDate); // No events earlier can be
+    public List <FitnessEvent> getAllEvents () throws IOException {
+        return getAllEventsAfter (startDate);
     }
     
-    public List <T> getAllAfter (LocalDateTime dateTime) throws IOException {
+    public List <FitnessEvent> getAllEventsAfter (LocalDateTime dateTime) throws IOException {
         List <FitnessEvent> events;
         
         final String template = configuration.<String> get ("retrieve-all-by-type-after").get ();
@@ -44,7 +44,15 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
         try   { events = database.retrieve (request, FitnessEvent.class); } 
         catch (SQLException sqle) { throw new IOException (sqle); }
         
-        return eventsToInstances (events);
+        return events;
+    }
+    
+    public List <T> getAll () throws IOException {
+        return getAllAfter (startDate); // No events earlier can be
+    }
+    
+    public List <T> getAllAfter (LocalDateTime dateTime) throws IOException {
+        return eventsToInstances (getAllEventsAfter (dateTime));
     }
     
     public T getByID (int id) throws IOException {
