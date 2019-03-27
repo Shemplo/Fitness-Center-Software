@@ -97,10 +97,7 @@ public class AdminController implements Initializable {
     private volatile ClientController currentClient;
     
     public synchronized void openClientDetails (FitnessClient client) {
-        if (currentClient != null) { // stopping previous opened controller
-            try   { currentClient.close (); } 
-            catch (Exception e) {}
-        }
+        closeDetails ();
         
         FitnessClient insert = Optional.ofNullable (client).orElse (new FitnessClient ());
         final ClientController controller = new ClientController (this, insert);
@@ -111,6 +108,15 @@ public class AdminController implements Initializable {
         
         try   { clientDetails.setContent(loader.load ()); } 
         catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public synchronized void closeDetails () {
+        if (currentClient != null) { // stopping previous opened controller
+            try   { currentClient.close (); } 
+            catch (Exception e) {}
+        }
+        
+        clientDetails.setContent (null);
     }
     
 }

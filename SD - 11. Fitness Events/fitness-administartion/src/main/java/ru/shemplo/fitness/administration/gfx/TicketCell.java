@@ -6,27 +6,27 @@ import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 
-import ru.shemplo.fitness.entities.FitnessClient;
+import ru.shemplo.fitness.entities.SeasonTicket;
 
-public class ClientCell extends ListCell <FitnessClient> {
+public class TicketCell extends ListCell <SeasonTicket> {
     
-    private FitnessClient client;
+    private SeasonTicket ticket;
     
-    public ClientCell (AdminController controller) {
+    public TicketCell (ClientController controller) {
         setOnMouseClicked (me -> {
             if (!MouseButton.PRIMARY.equals (me.getButton ())) {
                 return; // Only primary button is allowed
             }
             
-            if (isEmpty () || client == null) { return; }
-            controller.openClientDetails (client);
+            if (isEmpty () || ticket == null) { return; }
+            controller.onTicketSelected (ticket);
         });
     }
     
     @Override
-    protected void updateItem (FitnessClient item, boolean empty) {
+    protected void updateItem (SeasonTicket item, boolean empty) {
         super.updateItem (item, empty);
-        client = item;
+        ticket = item;
         
         if (item == null || empty) {
             setGraphic (null);
@@ -38,11 +38,11 @@ public class ClientCell extends ListCell <FitnessClient> {
         root.setPadding (new Insets (5));
         root.setSpacing (5);
         
-        final Label name = new Label (item.getFullName ());
+        final Label name = new Label (item.getName ());
         root.getChildren ().add (name);
         
-        String clientRemark = item.getRemark ();
-        final Label remark = new Label (clientRemark);
+        String visits = String.format ("Посещений: %d", item.getVisits ());
+        final Label remark = new Label (visits);
         root.getChildren ().add (remark);
         
         setWrapText (true);
