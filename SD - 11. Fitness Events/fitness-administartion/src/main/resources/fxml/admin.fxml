@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="ru.shemplo.fitness.administration.gfx.AdminController">
+           fx:controller="ru.shemplo.fitness.administration.gfx.AdminController">
     <HBox>
         <padding>
             <Insets top="5" right="5" bottom="5" left="5"/>
@@ -17,21 +17,26 @@
 
         <!-- Left column with list of clients -->
         <VBox>
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+            
             <HBox alignment="CENTER_LEFT">
                 <padding>
-                    <Insets top="5" right="5" bottom="5" left="5"/>
+                    <Insets top="5" bottom="5"/>
                 </padding>
 
                 <Label text="List of clients:"/>
                 <Pane HBox.hgrow="ALWAYS"/>
-                <Button text="add new"/>
+                <Button fx:id="addClient" text="add new"/>
             </HBox>
             <ListView fx:id="clientsList" VBox.vgrow="ALWAYS" />
         </VBox>
         <Separator orientation="VERTICAL" />
 
         <!-- Right part with Season Ticked data -->
-        <ScrollPane fx:id="clientDetails" fitToWidth="true" fitToHeight="true" pannable="true" hbarPolicy="NEVER"
-                    HBox.hgrow="ALWAYS"/>
+        <ScrollPane fx:id="clientDetails" fitToWidth="true" 
+            fitToHeight="true" pannable="true" 
+            hbarPolicy="NEVER" HBox.hgrow="ALWAYS"/>
     </HBox>
 </StackPane>

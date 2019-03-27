@@ -3,34 +3,34 @@
 create-new-ticket:          INSERT 
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`)
-                            VALUES ('ticket', '%d', 'seasonticket', 'create');
+                            VALUES ('seasonticket', '%d', 'ticket', 'create');
 
 # Query template to add secret identifier of Season Ticket    
 # Used by method SeasonTicketService.createTicket ()                      
 set-secret-to-ticket:       INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`, `property_value`)
-                            VALUES ('ticket', '%d', 'secret', 'set', '%s');
+                            VALUES ('seasonticket', '%d', 'secret', 'set', '%s');
                             
 set-client-to-ticket:       INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`, `property_value`)
-                            VALUES ('ticket', '%d', 'fitnessclient', 'set', '%d');
+                            VALUES ('seasonticket', '%d', 'fitnessclient', 'set', '%d');
                             
 change-visits-of-ticket:    INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`, `property_value`)
-                            VALUES ('ticket', '%d', 'visits', '%s', '%d');
+                            VALUES ('seasonticket', '%d', 'visits', '%s', '%d');
                             
 create-client-data:         INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`)
-                            VALUES ('client', '%d', 'fitnessclient', 'create');
+                            VALUES ('fitnessclient', '%d', 'client', 'create');
                             
 update-client-data:         INSERT
                             INTO `events` (`object_class`, `object_id`, `property_name`, 
                                            `property_action`, `property_value`)
-                            VALUES ('client', '%d', '%s', 'set', '%s');
+                            VALUES ('fitnessclient', '%d', '%s', 'set', '%s');
                             
 retrieve-data-by-type-id:   SELECT `object_id`, `property_name`, `property_action`, `property_value`, `date`
                             FROM `events` WHERE `object_class` = '%s' AND `object_id` = '%d'
@@ -48,7 +48,7 @@ retrieve-p-client-tickets:  SELECT es.`object_id`, es.`property_name`, es.`prope
                                     AND `property_action` = 'set' AND `property_value` = '%d' 
                             ) ids
                             WHERE ids.`object_id` = es.`object_id` 
-                              AND es.`object_class` = 'ticket'
+                              AND es.`object_class` = 'seasonticket'
                             ORDER BY `date` ASC
 
 # Date format must be: `yyyy-mm-dd HH:MM:ss` (f.e. `2009-01-28 21:00:00`)

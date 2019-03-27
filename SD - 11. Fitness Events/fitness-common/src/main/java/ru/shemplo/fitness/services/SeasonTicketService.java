@@ -6,13 +6,18 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.FitnessEvent;
 import ru.shemplo.fitness.entities.SeasonTicket;
 import ru.shemplo.snowball.annot.Snowflake;
+import ru.shemplo.snowball.stuctures.Pair;
 
 @Snowflake
 public class SeasonTicketService extends AbsService <SeasonTicket> {
@@ -123,6 +128,36 @@ public class SeasonTicketService extends AbsService <SeasonTicket> {
         catch (SQLException sqle) { throw new IOException (sqle); }
         
         return objectUnwrapper.unwrapTo (events, ticket);
+    }
+    
+    public Pair <List <SeasonTicket>, Boolean> updateTickets (List <SeasonTicket> tickets,
+            LocalDateTime lastUpdate, int current) throws IOException {
+        Map <Integer, List <FitnessEvent>> events = getAllEventsAfter (lastUpdate).stream ()
+          . collect (Collectors.groupingBy (FitnessEvent::getObjectId));
+        Map <Integer, SeasonTicket> ticketss = tickets.stream ()
+          . collect (Collectors.toMap (SeasonTicket::getId, __ -> __));
+        AtomicBoolean currentUpdated = new AtomicBoolean (false);
+        final List <SeasonTicket> toAdd = new ArrayList <> ();
+        
+        events.forEach ((id, eventss) -> {
+            if (ticketss.containsKey (id)) {
+                final SeasonTicket ticket = ticketss.get (id);
+                objectUnwrapper.unwrapTo (eventss, ticket);
+                if (current == ticket.getClient ()) { 
+                    currentUpdated.set (true); 
+                }
+            } else {
+                final SeasonTicket ticket = new SeasonTicket ();
+                objectUnwrapper.unwrapTo (eventss, ticket);
+                toAdd.add (ticket);
+            }
+        });
+        
+        List <SeasonTicket> toAddFiltered = toAdd.stream ()
+           . filter (SeasonTicket::isCompleted)
+           . collect (Collectors.toList ());
+             
+        return Pair.mp (toAddFiltered, currentUpdated.get ());
     }
     
 }

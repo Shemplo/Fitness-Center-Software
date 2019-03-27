@@ -2,21 +2,24 @@ package ru.shemplo.fitness.administration.gfx;
 
 import java.net.URL;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
-import javafx.concurrent.Service;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.shemplo.fitness.administration.services.FXClientDataService;
 import ru.shemplo.fitness.administration.services.FXClientUpdateService;
 import ru.shemplo.fitness.entities.FitnessClient;
+import ru.shemplo.fitness.entities.SeasonTicket;
 
 @Getter
 @RequiredArgsConstructor
@@ -27,7 +30,9 @@ public class ClientController implements Initializable, AutoCloseable {
     
     private FitnessClient changedClient = new FitnessClient ();
     
-    @FXML private Button saveClientDetails;
+    @FXML private Button saveClientDetails, resetClientDetails;
+    
+    @FXML private ListView <SeasonTicket> ticketsList;
     
     @FXML private TextField 
         idF, 
@@ -38,22 +43,28 @@ public class ClientController implements Initializable, AutoCloseable {
         phoneF, emailF, homePageF,
         remarkF;
     
-    private Service <FitnessClient> clientDataService;
-    
     @Override
     public void initialize (URL location, ResourceBundle resources) {
-        bindFields ();
-        
-        clientDataService = new FXClientDataService (this, client);
-        clientDataService.restart ();
+        bindFields (); initializeFields ();
         
         saveClientDetails.setOnMouseClicked (me -> {
             if (!MouseButton.PRIMARY.equals (me.getButton ())) {
                 return;
             }
             
-            new FXClientUpdateService (this, client, changedClient).restart ();
+            new FXClientUpdateService (this, client, changedClient)
+            . restart ();
         });
+        
+        resetClientDetails.setOnMouseClicked (me -> {
+            if (MouseButton.PRIMARY.equals (me.getButton ())) {
+                initializeFields (); // hard override of all fields
+            }
+        });
+    }
+    
+    public void currentClientUpdated () {
+        initializeFields ();
     }
     
     public void initializeFields () {
@@ -71,6 +82,11 @@ public class ClientController implements Initializable, AutoCloseable {
         emailF.       setText (Optional.ofNullable (client.getEmail ()).orElse (""));
         homePageF.    setText (Optional.ofNullable (client.getHomePage ()).orElse (""));
         remarkF.      setText (Optional.ofNullable (client.getRemark ()).orElse (""));
+        
+        List <SeasonTicket> tickets = adminController.getTicketsPool ().stream ()
+                                    . filter  (t -> t.getClient ().equals (client.getId ()))
+                                    . collect (Collectors.toList ());
+        ticketsList.setItems (FXCollections.observableArrayList (tickets));
     }
     
     private void bindFields () {

@@ -37,9 +37,7 @@ public class ClientCell extends ListCell <FitnessClient> {
         final VBox root = new VBox ();
         root.setPadding (new Insets (5));
         
-        String clientName = String.format ("%s %s %s", item.getLastName (), 
-                              item.getFirstName (), item.getSecondName ());
-        final Label name = new Label (clientName);
+        final Label name = new Label (item.getFullName ());
         root.getChildren ().add (name);
         
         String clientRemark = item.getRemark ();
