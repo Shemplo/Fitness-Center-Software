@@ -1,40 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
 
-<?import javafx.scene.layout.Pane?>
-<VBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-      alignment="TOP_CENTER" spacing="25" minWidth="400">
-    <padding>
-        <Insets bottom="10" left="10" right="10" top="10" />
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox styleClass="client-details" alignment="CENTER" maxWidth="1000" spacing="25">
 
-    <HBox alignment="CENTER_LEFT" spacing="10">
-        <Button fx:id="saveClientDetails"  text="save" />
-        <Button fx:id="resetClientDetails" text="reset" />
-    </HBox>
-
-    <VBox alignment="TOP_CENTER">
         <HBox spacing="20">
-            <VBox spacing="20">
-                <VBox spacing="10" alignment="TOP_CENTER">
-                    <ImageView fitWidth="128" fitHeight="128" />
+            <VBox spacing="20" alignment="TOP_CENTER">
+                <VBox spacing="10" alignment="CENTER">
+                    <ImageView fitWidth="128" fitHeight="128">
+                        <Image url="/img/avatar.jpg"/>
+                    </ImageView>
                     <Button text="Change image" disable="true"/>
                 </VBox>
             </VBox>
 
-            <VBox spacing="20">
+            <VBox spacing="20" alignment="TOP_CENTER">
                 <HBox alignment="CENTER_LEFT" spacing="5">
                     <Label text="Profile ID" minWidth="90"/>
                     <TextField fx:id="idF" HBox.hgrow="ALWAYS" disable="true"/>
@@ -114,15 +99,16 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Birthday" minWidth="90"/>
-                        <DatePicker fx:id="birthdayF" HBox.hgrow="ALWAYS"/>
+                        <HBox prefWidth="50" HBox.hgrow="ALWAYS">
+                            <DatePicker fx:id="birthdayF" HBox.hgrow="ALWAYS"/>
+                        </HBox>
 
                         <Label text="Sex" minWidth="90" alignment="CENTER_RIGHT"/>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <padding>
-                                <Insets left="10" right="10" />
-                            </padding>
-                            <RadioButton text="Male"/>
-                            <RadioButton text="Female"/>
+                        <HBox prefWidth="50" HBox.hgrow="ALWAYS">
+                            <ChoiceBox maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                                <String fx:value="Male"/>
+                                <String fx:value="Female"/>
+                            </ChoiceBox>
                         </HBox>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="5">
@@ -138,7 +124,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Season ticket"/>
                             <Separator HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="saveTicketDetails"  text="save" />
+                            <Button fx:id="saveTicketDetails" text="save"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Name" minWidth="90"/>
@@ -160,9 +146,14 @@
                         <Pane HBox.hgrow="ALWAYS"/>
                         <Button text="add new"/>
                     </HBox>
-                    <ListView fx:id="ticketsList" VBox.vgrow="ALWAYS" />
+                    <ListView fx:id="ticketsList" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </VBox>
         </HBox>
+
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="saveClientDetails">Save</Button>
+            <Button fx:id="resetClientDetails">Reset</Button>
+        </HBox>
     </VBox>
-</VBox>
+</StackPane>

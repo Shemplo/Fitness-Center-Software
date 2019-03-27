@@ -14,10 +14,10 @@ public class AdminApplication extends Application {
     @Override
     public void start (Stage stage) throws Exception {
         final URL url = getClass ().getResource (FXML_TEMPLATE);
-        final Scene scene = new Scene (FXMLLoader.load (url));
+        final Scene scene = new Scene (FXMLLoader.load (url), 1280, 720);
         
         stage.setTitle ("Fitness Events - administration");
-        stage.setMinWidth (600);
+        stage.setMinWidth (1280);
         stage.setScene (scene);
         stage.show ();
     }
