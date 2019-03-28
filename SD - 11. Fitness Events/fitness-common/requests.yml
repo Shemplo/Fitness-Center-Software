@@ -28,7 +28,7 @@ retrieve-p-client-tickets:  SELECT es.`object_id`, es.`property_name`, es.`prope
                             ORDER BY `date` ASC
 
 # Date format must be: `yyyy-mm-dd HH:MM:ss` (f.e. `2009-01-28 21:00:00`)
-retrieve-all-by-type-after: SELECT `object_id`, `property_name`, `property_action`, `property_value`, `date`
+retrieve-all-by-type-after: SELECT `object_id`, `object_class`, `property_name`, `property_action`, `property_value`, `date`
                             FROM `events` WHERE `object_class` = '%s' AND `date` > '%s'
                             ORDER BY `date` ASC
                             

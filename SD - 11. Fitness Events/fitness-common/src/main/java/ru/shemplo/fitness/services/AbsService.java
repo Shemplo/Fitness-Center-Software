@@ -17,11 +17,13 @@ import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
 import ru.shemplo.fitness.entities.*;
+import ru.shemplo.fitness.statistics.StatisticsModule;
 
 @RequiredArgsConstructor
 public abstract class AbsService <T extends Identifiable & Completable & Updatable> {
     
     protected DBObjectUnwrapper objectUnwrapper;
+    protected StatisticsModule statisticsModule;
     protected AppConfiguration configuration;
     protected DBManager database;
     

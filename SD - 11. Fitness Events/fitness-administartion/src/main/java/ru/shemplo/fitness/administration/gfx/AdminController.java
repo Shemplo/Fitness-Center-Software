@@ -31,9 +31,9 @@ public class AdminController implements Initializable {
     @Getter
     private final Set <SeasonTicket> ticketsPool = new HashSet <> ();
     
-    @FXML private ScrollPane clientDetails;
-    
-    @FXML private Button addClient;
+    @FXML private Button addClient, openStatistics;
+
+    @FXML private ScrollPane details;
     
     @Getter @FXML 
     private ListView <FitnessClient> clientsList;
@@ -91,6 +91,12 @@ public class AdminController implements Initializable {
                 openClientDetails (null);
             }
         });
+        
+        openStatistics.setOnMouseClicked (me -> {
+            if (MouseButton.PRIMARY.equals (me.getButton ())) {
+                openStatisticsDetails ();
+            }
+        });
     }
     
     @Getter
@@ -106,7 +112,17 @@ public class AdminController implements Initializable {
         loader.setController (controller);
         currentClient = controller;
         
-        try   { clientDetails.setContent(loader.load ()); } 
+        try   { details.setContent(loader.load ()); } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public synchronized void openStatisticsDetails () {
+        closeDetails ();
+        
+        final URL url = getClass ().getResource ("/fxml/statistics.fxml");
+        final FXMLLoader loader = new FXMLLoader (url);
+        
+        try   { details.setContent(loader.load ()); } 
         catch (IOException e) { e.printStackTrace(); }
     }
     
@@ -116,7 +132,7 @@ public class AdminController implements Initializable {
             catch (Exception e) {}
         }
         
-        clientDetails.setContent (null);
+        details.setContent (null);
     }
     
 }

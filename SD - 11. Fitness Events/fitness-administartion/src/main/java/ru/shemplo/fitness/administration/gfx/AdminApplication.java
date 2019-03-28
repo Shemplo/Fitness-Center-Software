@@ -5,6 +5,7 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class AdminApplication extends Application {
@@ -13,9 +14,10 @@ public class AdminApplication extends Application {
     
     @Override
     public void start (Stage stage) throws Exception {
-        final URL url = getClass ().getResource (FXML_TEMPLATE);
+        URL url = getClass ().getResource (FXML_TEMPLATE);
         final Scene scene = new Scene (FXMLLoader.load (url), 1280, 720);
         
+        stage.getIcons ().add (new Image ("/img/turnstile.png"));
         stage.setTitle ("Fitness Events - administration");
         stage.setMinWidth (1280);
         stage.setScene (scene);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.VBox?>
+
+
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ru.shemplo.fitness.administration.gfx.StatisticsController">
+    <VBox alignment="TOP_CENTER" spacing="20">
+        <BarChart fx:id="dayVisits" title="Visits per day">
+            <xAxis>
+                <CategoryAxis side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT" />
+            </yAxis>
+        </BarChart>
+        <BarChart fx:id="monthVisits" title="Visits in the last 30 days">
+            <xAxis>
+                <CategoryAxis side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT" />
+            </yAxis>
+        </BarChart>
+        <BarChart fx:id="averageVisits" title="Average visits in the last 30 days">
+            <xAxis>
+                <CategoryAxis side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT" />
+            </yAxis>
+        </BarChart>
+    </VBox>
+</StackPane>
