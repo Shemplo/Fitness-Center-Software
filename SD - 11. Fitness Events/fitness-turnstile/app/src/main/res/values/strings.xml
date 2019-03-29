@@ -6,4 +6,6 @@
     <string name="nfc_pass">Pass allowed</string>
     <string name="nfc_processing">Processing…</string>
     <string name="nfc_not_supported">This device doesn\'t support NFC</string>
+    <string name="visits_left">Visits left:</string>
+    <string name="error">Error</string>
 </resources>

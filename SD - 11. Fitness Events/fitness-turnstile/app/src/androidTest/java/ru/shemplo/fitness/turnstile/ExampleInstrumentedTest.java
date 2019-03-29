@@ -1,4 +1,4 @@
-package ru.shemplo.fitness.app;
+package ru.shemplo.fitness.turnstile;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ru.shemplo.fitness.app", appContext.getPackageName());
+        assertEquals("ru.shemplo.fitness.turnstile", appContext.getPackageName());
     }
 }

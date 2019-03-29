@@ -1,6 +1,5 @@
-package ru.shemplo.fitness.app;
+package ru.shemplo.fitness.turnstile;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -8,20 +7,21 @@ import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.sql.SQLException;
 
-import ru.shemplo.fitness.app.services.TicketService;
+import ru.shemplo.fitness.turnstile.db.EventDAO;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView nfcText;
     private TextView passText;
@@ -146,7 +146,7 @@ public class MainActivity extends Activity {
 
     private static class DatabaseRequestTask extends AsyncTask<String, Integer, Integer> {
 
-        private WeakReference<MainActivity> contextReference;
+        private final WeakReference<MainActivity> contextReference;
 
         DatabaseRequestTask(MainActivity context) {
             this.contextReference = new WeakReference<>(context);
@@ -157,12 +157,16 @@ public class MainActivity extends Activity {
             try {
                 String id = args[0];
 
-                TicketService service = new TicketService();
-                int visits = service.getVisitOfTicketBySecret(id);
-                Log.d(TAG, "Visits: " + visits);
+                EventDAO dao = new EventDAO();
+                int visits = dao.getVisits(id);
+                if (visits > 0) {
+                    dao.addVisit(id);
+                    visits--;
+                }
+                Log.d(TAG, "Visits left: " + visits);
                 return visits;
 
-            } catch (IOException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
                 cancel(true);
             }
@@ -183,8 +187,7 @@ public class MainActivity extends Activity {
             final MainActivity context = contextReference.get();
             if (context == null) return;
 
-            context.isProcessing = false;
-            context.showToast("Visits left: " + (result - 1));
+            context.showToast(context.getString(R.string.visits_left) + ' ' + result);
             if (result > 0) {
                 context.showPass();
             } else {
@@ -195,9 +198,10 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void run() {
+                    context.isProcessing = false;
                     context.showNfc();
                 }
-            }, 3000);
+            }, 2500);
         }
 
         @Override
@@ -205,10 +209,9 @@ public class MainActivity extends Activity {
             MainActivity context = contextReference.get();
             if (context == null) return;
 
+            context.showToast(context.getString(R.string.error));
             context.isProcessing = false;
             context.showNfc();
         }
     }
 }
-
-
