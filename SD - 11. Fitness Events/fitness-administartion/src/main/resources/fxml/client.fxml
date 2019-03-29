@@ -105,7 +105,7 @@
 
                         <Label text="Sex" minWidth="90" alignment="CENTER_RIGHT"/>
                         <HBox prefWidth="50" HBox.hgrow="ALWAYS">
-                            <ChoiceBox maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                            <ChoiceBox fx:id="sexF" maxWidth="Infinity" HBox.hgrow="ALWAYS">
                                 <String fx:value="Male"/>
                                 <String fx:value="Female"/>
                             </ChoiceBox>

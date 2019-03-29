@@ -79,6 +79,9 @@ public class SeasonTicketService extends AbsService <SeasonTicket> {
             } else {
                 final SeasonTicket ticket = new SeasonTicket ();
                 objectUnwrapper.unwrapTo (eventss, ticket);
+                if (current == ticket.getClient ()) { 
+                    currentUpdated.set (true); 
+                }
                 toAdd.add (ticket);
             }
         });

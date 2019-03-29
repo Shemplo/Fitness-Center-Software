@@ -28,6 +28,8 @@ public class FXTicketUpdateService extends Service <SeasonTicket> {
             
             controller.getTicketDetails ().setDisable (true);
             controller.currentClientUpdated ();
+            
+            controller.getAdminController ().getTicketsPool ().forEach (System.out::println);
         });
         
         setOnFailed (__ -> getException ().printStackTrace ());
@@ -54,6 +56,14 @@ public class FXTicketUpdateService extends Service <SeasonTicket> {
                 if (diff.size () == 0) {
                     System.err.println ("No changes found");
                     return current;
+                }
+                
+                if (diff.containsKey ("visits")) {
+                    int visits = Integer.parseInt (diff.get ("visits"));
+                    if (visits < 0) {
+                        System.err.println ("Number of visits can't be negative");
+                        return null; // Invalid passing data (visits amount)
+                    }
                 }
                 
                 // Unfortunately incremental change value of `visits` field
