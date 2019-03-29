@@ -39,7 +39,11 @@ public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBMa
     public <T> List <T> retrieve (String request, Class <T> type) 
             throws IOException, SQLException {
         List <T> result = new ArrayList <> ();
-        
+
+        System.out.flush();
+        System.err.println(request);
+        System.err.flush();
+
         try (
             Connection connection = openConnection ();
         ) {
@@ -54,11 +58,11 @@ public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBMa
                     map.put (name, value);
                 }
                 
-                System.out.println (map);
+                System.out.format ("Thread[%2d]: %s%n", Thread.currentThread().getId(), map);
                 result.add (objectUnwrapper.unwrap (map, type));
             }
         }
-        
+
         return result;
     }
     

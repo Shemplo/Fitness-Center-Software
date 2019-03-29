@@ -13,7 +13,7 @@
             <Label>List of clients:</Label>
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="addClient" text="Add client"/>
-            <Button fx:id="openStatistics" text="See statistics"/>
+            <Button fx:id="openStatistics" text="Statistics"/>
         </HBox>
         <ListView fx:id="clientsList" VBox.vgrow="ALWAYS"/>
     </VBox>

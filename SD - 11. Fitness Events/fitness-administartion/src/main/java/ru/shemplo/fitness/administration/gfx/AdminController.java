@@ -26,7 +26,7 @@ import ru.shemplo.fitness.entities.SeasonTicket;
 public class AdminController implements Initializable {
     
     private static final Comparator <FitnessClient> LEXICOGRAPHIC_ORDER 
-          = (a, b) -> a.getFullName ().compareTo (b.getFullName ());
+          = Comparator.comparing(FitnessClient::getFullName);
     
     @Getter
     private final Set <SeasonTicket> ticketsPool = new HashSet <> ();

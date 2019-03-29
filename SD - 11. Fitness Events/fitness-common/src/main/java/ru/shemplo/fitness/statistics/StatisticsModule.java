@@ -1,6 +1,7 @@
 package ru.shemplo.fitness.statistics;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import java.util.HashMap;
@@ -42,13 +43,15 @@ public class StatisticsModule {
                           Integer clientID = ticket2client.get (event.getObjectId ());
                           if (amount == 1 && clientID != null) {
                               addVisitToClient (clientID, time);
+                          } else {
+                              System.err.println("Unknown client: " + event);
                           }
                       }
                   }
               });
     }
     
-    private synchronized void addVisitToClient (int clientID, LocalDateTime time) {        
+    private synchronized void addVisitToClient (int clientID, LocalDateTime time) {
         statisticsPerClient.putIfAbsent (clientID, new ConcurrentHashMap<> ());
         statisticsPerClient.get (clientID).compute (time, (__, v) -> v == null ? 1 : v + 1);
     }

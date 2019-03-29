@@ -64,7 +64,7 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
     }
     
     @Getter protected static final LocalDateTime startDate 
-          = LocalDateTime.parse ("2019-03-18T00:00:00");
+          = LocalDateTime.parse ("2019-01-01T00:00:00");
     
     public List <FitnessEvent> getAllEvents () throws IOException {
         return getAllEventsAfter (startDate);
@@ -79,7 +79,7 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
         //final String date = Utils.DATETIME_FORMAT.format (dateTime);
         
         final String request = String.format (template, objectName, date);
-        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        try   { events = database.retrieve (request, FitnessEvent.class); }
         catch (SQLException sqle) { throw new IOException (sqle); }
         
         return events;
