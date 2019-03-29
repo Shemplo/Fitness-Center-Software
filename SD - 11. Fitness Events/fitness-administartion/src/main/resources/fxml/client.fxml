@@ -129,6 +129,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Name" minWidth="90"/>
                             <TextField fx:id="ticketNameF" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="genTicketName" text="D" />
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Secret" minWidth="90"/>

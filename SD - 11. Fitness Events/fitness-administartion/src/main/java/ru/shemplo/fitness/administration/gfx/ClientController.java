@@ -33,7 +33,8 @@ public class ClientController implements Initializable, AutoCloseable {
     private FitnessClient changedClient = new FitnessClient ();
     
     @FXML private Button saveClientDetails, resetClientDetails,
-                         saveTicketDetails, addTicket;
+                         saveTicketDetails, addTicket,
+                         genTicketName;
     
     @FXML private ListView <SeasonTicket> ticketsList;
     
@@ -89,6 +90,21 @@ public class ClientController implements Initializable, AutoCloseable {
             if (MouseButton.PRIMARY.equals (me.getButton ())) {
                 onTicketSelected (new SeasonTicket ());
             }
+        });
+        
+        genTicketName.setOnMouseClicked (me -> {
+            if (!MouseButton.PRIMARY.equals (me.getButton ())) {
+                return;
+            }
+            
+            int number = ticketsList.getItems ().stream ()
+                       . map      (SeasonTicket::getName)
+                       . map      (name -> name.replaceAll ("[^\\d]", ""))
+                       . map      (String::trim)
+                       . filter   (str -> !str.contains (" "))
+                       . mapToInt (Integer::parseInt)
+                       .max       ().orElse (0) + 1;
+            ticketNameF.setText (String.format ("Season ticket #%d", number));
         });
     }
     
