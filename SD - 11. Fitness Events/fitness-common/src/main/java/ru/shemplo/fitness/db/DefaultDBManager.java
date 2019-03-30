@@ -39,11 +39,7 @@ public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBMa
     public <T> List <T> retrieve (String request, Class <T> type) 
             throws IOException, SQLException {
         List <T> result = new ArrayList <> ();
-
-        System.out.flush();
-        System.err.println(request);
-        System.err.flush();
-
+        
         try (
             Connection connection = openConnection ();
         ) {
