@@ -124,12 +124,24 @@
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Season ticket"/>
                             <Separator HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="saveTicketDetails" text="save"/>
+                            <Button fx:id="saveTicketDetails" styleClass="icon-button">
+                                <graphic>
+                                    <ImageView fitWidth="16" fitHeight="16">
+                                        <Image url="/img/save.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Name" minWidth="90"/>
                             <TextField fx:id="ticketNameF" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="genTicketName" text="D" />
+                            <Button fx:id="genTicketName" styleClass="icon-button">
+                                <graphic>
+                                    <ImageView fitWidth="16" fitHeight="16">
+                                        <Image url="/img/more.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Secret" minWidth="90"/>
@@ -150,7 +162,13 @@
                     <HBox alignment="CENTER_LEFT">
                         <Label text="List of Season Tickets:"/>
                         <Pane HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="addTicket" text="add new"/>
+                        <Button fx:id="addTicket" styleClass="icon-button">
+                            <graphic>
+                                <ImageView fitWidth="16" fitHeight="16">
+                                    <Image url="/img/add.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </HBox>
                     <ListView fx:id="ticketsList" VBox.vgrow="ALWAYS"/>
                 </VBox>
