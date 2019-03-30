@@ -34,7 +34,9 @@ public class FitnessClient implements Updatable, Identifiable, Completable {
                    email,
                    homePage,
                    
-                   remark;
+                   remark,
+                   
+                   sex;
     
     private LocalDate birthday;
     

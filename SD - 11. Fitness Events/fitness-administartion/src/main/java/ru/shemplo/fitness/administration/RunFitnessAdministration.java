@@ -9,11 +9,12 @@ import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.administration.gfx.AdminApplication;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.services.SeasonTicketService;
+import ru.shemplo.fitness.statistics.StatisticsModule;
 import ru.shemplo.snowball.annot.Wind;
 import ru.shemplo.snowball.annot.processor.Snowball;
 
 @Wind (blow = {AppConfiguration.class, SeasonTicketService.class,
-               DBManager.class})
+               DBManager.class, StatisticsModule.class})
 public class RunFitnessAdministration extends Snowball {
     
     public static void main (String ... args) { shape (args); }

@@ -54,11 +54,11 @@ public class DefaultDBManager implements DBUpdateManager, DBRetriveManager, DBMa
                     map.put (name, value);
                 }
                 
-                System.out.println (map);
+                System.out.format ("Thread[%2d]: %s%n", Thread.currentThread().getId(), map);
                 result.add (objectUnwrapper.unwrap (map, type));
             }
         }
-        
+
         return result;
     }
     

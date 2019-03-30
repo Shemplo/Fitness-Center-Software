@@ -17,11 +17,13 @@ import ru.shemplo.fitness.AppConfiguration;
 import ru.shemplo.fitness.db.DBManager;
 import ru.shemplo.fitness.db.DBObjectUnwrapper;
 import ru.shemplo.fitness.entities.*;
+import ru.shemplo.fitness.statistics.StatisticsModule;
 
 @RequiredArgsConstructor
 public abstract class AbsService <T extends Identifiable & Completable & Updatable> {
     
     protected DBObjectUnwrapper objectUnwrapper;
+    protected StatisticsModule statisticsModule;
     protected AppConfiguration configuration;
     protected DBManager database;
     
@@ -62,7 +64,7 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
     }
     
     @Getter protected static final LocalDateTime startDate 
-          = LocalDateTime.parse ("2019-03-18T00:00:00");
+          = LocalDateTime.parse ("2019-01-01T00:00:00");
     
     public List <FitnessEvent> getAllEvents () throws IOException {
         return getAllEventsAfter (startDate);
@@ -77,7 +79,7 @@ public abstract class AbsService <T extends Identifiable & Completable & Updatab
         //final String date = Utils.DATETIME_FORMAT.format (dateTime);
         
         final String request = String.format (template, objectName, date);
-        try   { events = database.retrieve (request, FitnessEvent.class); } 
+        try   { events = database.retrieve (request, FitnessEvent.class); }
         catch (SQLException sqle) { throw new IOException (sqle); }
         
         return events;
