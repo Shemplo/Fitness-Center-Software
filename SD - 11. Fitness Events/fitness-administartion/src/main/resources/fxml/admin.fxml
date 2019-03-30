@@ -3,6 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="ru.shemplo.fitness.administration.gfx.AdminController"
       stylesheets="/css/admin.css">
@@ -12,8 +14,20 @@
         <HBox spacing="5" alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <Label>List of clients:</Label>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="addClient" text="Add client"/>
-            <Button fx:id="openStatistics" text="Statistics"/>
+            <Button fx:id="addClient" styleClass="icon-button">
+                <graphic>
+                    <ImageView fitWidth="16" fitHeight="16">
+                        <Image url="/img/add.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="openStatistics" styleClass="icon-button">
+                <graphic>
+                    <ImageView fitWidth="16" fitHeight="16">
+                        <Image url="/img/statistics.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
         <ListView fx:id="clientsList" VBox.vgrow="ALWAYS"/>
     </VBox>
