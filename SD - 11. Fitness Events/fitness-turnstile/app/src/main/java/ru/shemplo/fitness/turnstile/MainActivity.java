@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
                 int visits = dao.getVisits(id);
                 if (visits > 0) {
                     dao.addVisit(id);
-                    visits--;
                 }
                 Log.d(TAG, "Visits left: " + visits);
+                visits--;
                 return visits;
 
             } catch (SQLException e) {
@@ -187,11 +187,13 @@ public class MainActivity extends AppCompatActivity {
             final MainActivity context = contextReference.get();
             if (context == null) return;
 
-            context.showToast(context.getString(R.string.visits_left) + ' ' + result);
-            if (result > 0) {
+
+            if (result >= 0) {
                 context.showPass();
+                context.showToast(context.getString(R.string.visits_left) + ' ' + result);
             } else {
                 context.showFail();
+                context.showToast(context.getString(R.string.visits_left) + " 0");
             }
 
             new Handler().postDelayed(new Runnable() {
