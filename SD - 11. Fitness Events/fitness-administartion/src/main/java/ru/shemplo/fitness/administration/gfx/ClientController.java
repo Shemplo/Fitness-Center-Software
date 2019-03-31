@@ -1,5 +1,6 @@
 package ru.shemplo.fitness.administration.gfx;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
@@ -22,6 +23,9 @@ import ru.shemplo.fitness.administration.services.FXClientUpdateService;
 import ru.shemplo.fitness.administration.services.FXTicketUpdateService;
 import ru.shemplo.fitness.entities.FitnessClient;
 import ru.shemplo.fitness.entities.SeasonTicket;
+import ru.shemplo.fitness.services.SeasonTicketService;
+import ru.shemplo.snowball.annot.processor.Snowball;
+import ru.shemplo.snowball.annot.processor.SnowballContext;
 
 @Getter
 @RequiredArgsConstructor
@@ -34,7 +38,7 @@ public class ClientController implements Initializable, AutoCloseable {
     
     @FXML private Button saveClientDetails, resetClientDetails,
                          saveTicketDetails, addTicket,
-                         genTicketName;
+                         genTicketName, genFakeVisit;
     
     @FXML private ListView <SeasonTicket> ticketsList;
     
@@ -105,6 +109,25 @@ public class ClientController implements Initializable, AutoCloseable {
                        . mapToInt (Integer::parseInt)
                        .max       ().orElse (0) + 1;
             ticketNameF.setText (String.format ("Season ticket #%d", number));
+        });
+        
+        genFakeVisit.setOnMouseClicked (me -> {
+            if (!MouseButton.PRIMARY.equals (me.getButton ())) {
+                return;
+            }
+            
+            SnowballContext context     = Snowball.getContext ();
+            SeasonTicketService service = context.getSnowflakeFor (SeasonTicketService.class);
+            
+            if (ticket.getId () != null && ticket.getVisits () > 0) {
+                new Thread (() -> {
+                    try {
+                        service.subtractVisits (ticket, 1);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException (ioe);
+                    }
+                }).start ();
+            }
         });
     }
     

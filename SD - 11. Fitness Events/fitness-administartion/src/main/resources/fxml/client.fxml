@@ -150,6 +150,13 @@
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Visits" minWidth="90"/>
                             <TextField fx:id="ticketVisitsF" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="genFakeVisit" styleClass="icon-button">
+                                <graphic>
+                                    <ImageView fitWidth="12" fitHeight="12">
+                                        <Image url="/img/mone.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                             <Label text="Last visit" minWidth="90"/>

@@ -93,4 +93,14 @@ public class SeasonTicketService extends AbsService <SeasonTicket> {
         return Pair.mp (toAddFiltered, currentUpdated.get ());
     }
     
+    public void subtractVisits (SeasonTicket ticket, int amount) throws IOException {
+        final String template = configuration.<String> get ("create-new-event").get ();
+        final String objectName = TOKEN.getSimpleName ().toLowerCase ();
+        
+        final String request = String.format (template, objectName, ticket.getId (), 
+                                                 "visits", "subtract", "" + amount);
+        try   { database.update (request); }
+        catch (SQLException sqle) { throw new IOException (sqle); }
+    }
+    
 }
