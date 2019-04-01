@@ -14,7 +14,7 @@ We can easily kepp this object in relative model:
 }
 ```
 
-There are some problems: in case ob big number of variative parameters (fields), and changing set of these parameters.
+There are some problems: in case of big number of variative parameters (fields), and changing set of these parameters.
 So the solution is to save this object as sequence of events:
 
 ```haskell
