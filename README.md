@@ -2,3 +2,5 @@
 
 This project is a separate part of [Study cources](https://github.com/Shemplo/Study-courses) repository 
 and contains the last homework for the _Software design_ cource.
+
+See `SD - 11. Fitness Events` for more details :wink:
